@@ -77,6 +77,7 @@ namespace CSkyL.Game.Object
 
             return details;
         }
+        public string GetPrefabName() => _instance.Info.name;
 
         public static IEnumerable<Pedestrian> GetIf(System.Func<Pedestrian, bool> filter)
         {

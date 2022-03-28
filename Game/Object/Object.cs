@@ -13,6 +13,7 @@ namespace CSkyL.Game.Object
         Transform.Positioning GetPositioning();
         Utils.Infos GetInfos();
         string GetStatus();
+        string GetPrefabName();
     }
 
     public abstract class Object : IObject

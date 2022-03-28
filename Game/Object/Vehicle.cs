@@ -27,7 +27,7 @@ namespace CSkyL.Game.Object
             }
             return status;
         }
-
+        public string GetPrefabName() => _vehicle.Info.name;
         public Utils.Infos GetInfos()
         {
             var details = new Utils.Infos();
@@ -47,9 +47,10 @@ namespace CSkyL.Game.Object
 
         public bool IsSpawned => _Is(global::Vehicle.Flags.Spawned);
         public bool IsReversed => _Is(global::Vehicle.Flags.Reversed);
-        public bool IsLeading => _vehicle.m_leadingVehicle == 0;
-        public bool IsTrailing => _vehicle.m_trailingVehicle == 0;
-        public bool IsMiddle => !(IsLeading || IsTrailing);
+        public bool IsHead => _vehicle.m_leadingVehicle == 0;
+        public bool IsEnd => _vehicle.m_trailingVehicle == 0;
+        public bool IsMiddle => !(IsHead || IsEnd);
+        public bool IsFront => IsReversed ? IsEnd : IsHead;
 
         public float GetAttachOffsetFront() => _VInfo.m_attachOffsetFront;
         public VehicleID GetFrontVehicleID()

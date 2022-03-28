@@ -124,6 +124,8 @@ namespace CSkyL
             internal static Vec2D _FromVec2(UnityEngine.Vector2 v)
                 => new Vec2D { _x = v.x, _y = v.y };
 
+            public override string ToString() => $"({_x}, {_y})";
+
             private float _x, _y;
         }
 

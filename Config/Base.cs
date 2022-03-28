@@ -131,7 +131,7 @@
                 where TConfig : IConfigData, new()
         {
             while (reader.IsStartElement()) {
-                var key = reader.Name;
+                var key = _TagToStr(reader.Name);
                 reader.ReadStartElement();
                 var str = reader.ReadContentAsString();
                 var config = _DefaultFor<TConfig>();
@@ -168,10 +168,36 @@
                 where TConfig : IConfigData, new()
         {
             foreach (var config in dictField) {
-                writer.WriteStartElement(config.Key);
+                writer.WriteStartElement(_StrToTag(config.Key));
                 writer.WriteString(config.Value.ToString());
                 writer.WriteEndElement();
             }
+        }
+
+        protected static string _StrToTag(string str)
+        {
+            string tag = "_";
+            foreach (var ch in str)
+                tag += char.IsLetterOrDigit(ch) ? ch.ToString() :
+                       ch == '_' ? "__" : $"_{(byte) ch:000}";
+            return tag;
+        }
+        protected static string _TagToStr(string tag)
+        {
+            string str = "";
+            for (int i = 1; i < tag.Length; i++) {
+                if (tag[i] == '_') {
+                    if (i + 3 < tag.Length && byte.TryParse(tag.Substring(i + 1, 3), out var ch))
+                        str += (char) ch;
+                    else Log.Warn($"Dict Config: xml tag({tag}) is invalid");
+                    i += 3;
+                }
+                else if (char.IsLetterOrDigit(tag[i]))
+                    str += tag[i];
+                else Log.Warn($"Dict Config: xml tag({tag}) contains " +
+                              $"invalid character '{tag[i]}'");
+            }
+            return str;
         }
 
         private readonly string _filePath;

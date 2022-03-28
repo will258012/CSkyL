@@ -24,7 +24,11 @@
         public static implicit operator T(ConfigData<T> data) => data._data;
         public ConfigData(T a) { this._data = a; }
 
-        public virtual void Assign(object other) { if (other is ConfigData<T> o) Assign(o); }
+        public virtual void Assign(object other)
+        {
+            if (other is ConfigData<T> o) Assign(o);
+            else Log.Warn($"ConfigData<{typeof(T).Name}> assigned with <{other.GetType().Name}>");
+        }
         public virtual T Assign(T data) { return _data = data; }
         public override string ToString() => _data.ToString();
         public virtual bool AssignByParsing(string str)
@@ -62,42 +66,86 @@
 
     public class OffsetConfig
     {
-        public OffsetConfig(CfFloat forward, CfFloat up, CfFloat right)
-        { this.forward = forward; this.up = up; this.right = right; }
+        public OffsetConfig(CfFloat forward, CfFloat up, CfFloat right,
+                            CfFloat yawDegree = null, CfFloat pitchDegree = null)
+        {
+            this.forward = forward; this.up = up; this.right = right;
+            this.yawDegree = yawDegree ?? new CfFloat(0f, -180f, 180f);
+            this.pitchDegree = pitchDegree ?? new CfFloat(0f, -90f, 90f);
+        }
 
-        public override string ToString() => $"{forward} {up} {right}";
+        public override string ToString() => $"{forward},{up},{right},{yawDegree},{pitchDegree}";
         public readonly CfFloat forward, up, right;
+        public readonly CfFloat yawDegree, pitchDegree;
     }
     public class CfOffset : ConfigData<OffsetConfig>
     {
-        public CfOffset(CfFloat forward, CfFloat up, CfFloat right)
-            : base(new OffsetConfig(forward, up, right)) { }
+        public CfOffset(CfFloat forward, CfFloat up, CfFloat right,
+                        CfFloat yawDegree = null, CfFloat pitchDegree = null)
+            : base(new OffsetConfig(forward, up, right, yawDegree, pitchDegree)) { }
 
         public CfFloat forward => _data.forward;
         public CfFloat up => _data.up;
         public CfFloat right => _data.right;
+        public CfFloat yawDegree => _data.yawDegree;
+        public CfFloat pitchDegree => _data.pitchDegree;
 
-        public Transform.LocalMovement AsMovement => new Transform.LocalMovement
+        public Transform.Offset AsOffSet => new Transform.Offset(
+            new Transform.LocalMovement { forward = forward, up = up, right = right },
+            new Transform.DeltaAttitude(yawDegree, pitchDegree)
+        );
+
+        public void Assign(Transform.Offset offset)
         {
-            forward = _data.forward, up = _data.up, right = _data.right
-        };
+            _data.forward.Assign(offset.movement.forward);
+            _data.up.Assign(offset.movement.up);
+            _data.right.Assign(offset.movement.right);
+            _data.yawDegree.Assign(offset.deltaAttitude.yawDegree);
+            _data.pitchDegree.Assign(offset.deltaAttitude.pitchDegree);
+        }
 
         public override OffsetConfig Assign(OffsetConfig data)
         {
             _data.forward.Assign(data.forward);
             _data.up.Assign(data.up);
             _data.right.Assign(data.right);
+            _data.yawDegree.Assign(data.yawDegree);
+            _data.pitchDegree.Assign(data.pitchDegree);
             return _data;
         }
 
         public override bool AssignByParsing(string str)
         {
-            var strs = str.Split(' ');
-            if (strs.Length != 3) return false;
+            var strs = str.Split(',');
+            if (strs.Length != 5) return false;
             try {
                 _data.forward.Assign(float.Parse(strs[0]));
                 _data.up.Assign(float.Parse(strs[1]));
                 _data.right.Assign(float.Parse(strs[2]));
+                _data.yawDegree.Assign(float.Parse(strs[3]));
+                _data.pitchDegree.Assign(float.Parse(strs[4]));
+            }
+            catch { return false; }
+            return true;
+        }
+    }
+
+    public class CfScreenPosition : ConfigData<CSkyL.Math.Vec2D>
+    {
+        public CfScreenPosition(CSkyL.Math.Vec2D v) : base(v) { }
+
+        public float x => _data.x;
+        public float y => _data.y;
+
+        public override string ToString() => $"{x},{y}";
+
+        public override bool AssignByParsing(string str)
+        {
+            var strs = str.Split(',');
+            if (strs.Length != 2) return false;
+            try {
+                _data.x = float.Parse(strs[0]);
+                _data.y = float.Parse(strs[1]);
             }
             catch { return false; }
             return true;
