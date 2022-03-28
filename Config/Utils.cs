@@ -64,6 +64,7 @@
     {
         public OffsetConfig(CfFloat forward, CfFloat up, CfFloat right)
         { this.forward = forward; this.up = up; this.right = right; }
+
         public override string ToString() => $"{forward} {up} {right}";
         public readonly CfFloat forward, up, right;
     }
@@ -76,16 +77,16 @@
         public CfFloat up => _data.up;
         public CfFloat right => _data.right;
 
-        public Transform.LocalMovement AsLocalMovement => new Transform.LocalMovement
+        public Transform.LocalMovement AsMovement => new Transform.LocalMovement
         {
             forward = _data.forward, up = _data.up, right = _data.right
         };
 
         public override OffsetConfig Assign(OffsetConfig data)
         {
-            _data.up.Assign(_data.forward);
-            _data.up.Assign(_data.up);
-            _data.up.Assign(_data.right);
+            _data.forward.Assign(data.forward);
+            _data.up.Assign(data.up);
+            _data.right.Assign(data.right);
             return _data;
         }
 

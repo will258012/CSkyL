@@ -21,13 +21,12 @@
                 return;
             }
             foreach (var field in GetType().GetFields(
-                                       BindingFlags.Public | BindingFlags.Instance)) {
+                                       BindingFlags.Public | BindingFlags.Instance))
                 if (field.GetValue(this) is IConfigData cur &&
                     field.GetValue(other) is IConfigData oth) cur.Assign(oth);
-            }
         }
         public virtual void Reset()
-            => Assign(System.Activator.CreateInstance(GetType()) as Base);
+            => Assign(Activator.CreateInstance(GetType()) as Base);
 
         /*--------- serialization -------------------------------------------*/
 
