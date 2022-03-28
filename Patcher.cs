@@ -29,7 +29,7 @@
                 var harmony = new Harmony(name);
                 harmony.PatchAll(assembly);
                 _patchedAssemblies.Add(name);
-                Log.Msg(" -- patched: ");
+                Log.Msg(" -- patched");
             }
             catch (System.Exception e) {
                 Log.Err(" -- patching fails: " + e.ToString());
@@ -47,8 +47,8 @@
             Log.Msg($"Harmony: unpatching <{name}>");
             try {
                 var harmony = new Harmony(name);
-                harmony.UnpatchAll();
-                Log.Msg(" -- unpatched: ");
+                harmony.UnpatchAll(name);
+                Log.Msg(" -- unpatched");
             }
             catch (System.Exception e) {
                 Log.Err(" -- unpatching fails: " + e.ToString());

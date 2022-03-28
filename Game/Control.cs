@@ -10,6 +10,8 @@ namespace CSkyL.Game
 
         public static bool MouseTriggered(MouseButton btn)
             => Input.GetMouseButtonDown((int) btn);
+        public static bool MousePressed(MouseButton btn)
+            => Input.GetMouseButton((int) btn);
         public static bool KeyTriggered(KeyCode key) => Input.GetKeyDown(key);
         public static bool KeyPressed(KeyCode key) => Input.GetKey(key);
 
