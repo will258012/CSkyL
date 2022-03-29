@@ -39,7 +39,7 @@ namespace CSkyL.Game.Object
         public override ObjectID ID => id;
         public override string Name {
             get {
-                var name = InstanceManager.instance.GetName(id.implID);
+                var name = InstanceManager.instance.GetName(id._iID);
                 return string.IsNullOrEmpty(name) ? "(unknown)" : name;
             }
         }
@@ -52,7 +52,7 @@ namespace CSkyL.Game.Object
     {
         public override string Name => GetName(id);
         public static string GetName(BuildingID id)
-            => BuildingManager.instance.GetBuildingName(id.implIndex, id.implID);
+            => BuildingManager.instance.GetBuildingName(id._index, id._iID);
 
         internal static Building _Of(BuildingID id) => new Building(id);
         private Building(BuildingID id) : base(id) { }
@@ -61,7 +61,7 @@ namespace CSkyL.Game.Object
     {
         public override string Name => GetName(id);
         public static string GetName(TransitID id)
-            => TransportManager.instance.GetLineName(id.implIndex);
+            => TransportManager.instance.GetLineName(id._index);
 
         internal static TransitLine _Of(TransitID id) => new TransitLine(id);
         private TransitLine(TransitID id) : base(id) { }
@@ -71,9 +71,27 @@ namespace CSkyL.Game.Object
         public TransitID TransitLineID => GetTransitLineID(id);
         public static TransitID GetTransitLineID(NodeID id)
             => TransitID._FromIndex(NetManager.instance.m_nodes
-                            .m_buffer[id.implIndex].m_transportLine);
+                            .m_buffer[id._index].m_transportLine);
 
         internal static Node _Of(NodeID id) => new Node(id);
         private Node(NodeID id) : base(id) { }
+    }
+    public class Segment : Object<SegmentID>
+    {
+        public override string Name => GetName(id);
+        public static string GetName(SegmentID id)
+            => NetManager.instance.GetSegmentName(id._index);
+
+        internal static Segment _Of(SegmentID id) => new Segment(id);
+        private Segment(SegmentID id) : base(id) { }
+    }
+    public class District : Object<DistrictID>
+    {
+        public override string Name => GetName(id);
+        public static string GetName(DistrictID id)
+            => DistrictManager.instance.GetDistrictName(id._index);
+
+        internal static District _Of(DistrictID id) => new District(id);
+        private District(DistrictID id) : base(id) { }
     }
 }

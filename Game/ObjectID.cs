@@ -15,22 +15,22 @@ namespace CSkyL.Game.ID
             default: return null;
             }
         }
-        public override string ToString() => implID.ToString();
-        public bool IsValid => InstanceManager.IsValid(implID);
+        public override string ToString() => _iID.ToString();
+        public bool IsValid => InstanceManager.IsValid(_iID);
 
-        public readonly InstanceID implID;
-        protected ObjectID(InstanceID id) { implID = id; }
+        internal readonly InstanceID _iID;
+        protected ObjectID(InstanceID id) { _iID = id; }
     }
 
     public abstract class BaseID<T> : ObjectID where T : struct, System.IComparable<T>
     {
-        public override string ToString() => $"{implIndex}/{base.ToString()}";
+        public override string ToString() => $"{_index}/{base.ToString()}";
 
-        public readonly T implIndex;
-        protected BaseID(T index, InstanceID implID) : base(implID) { implIndex = index; }
+        internal readonly T _index;
+        protected BaseID(T index, InstanceID implID) : base(implID) { _index = index; }
 
         protected static Derived NullIfInvalid<Derived>(Derived id) where Derived : BaseID<T>
-            => id.implIndex.CompareTo(default) == 0 ? null : id;
+            => id._index.CompareTo(default) == 0 ? null : id;
     }
 
     public class HumanID : BaseID<uint>
@@ -74,5 +74,17 @@ namespace CSkyL.Game.ID
         internal static NodeID _FromIndex(ushort index) => NullIfInvalid(
                 new NodeID(index, new InstanceID { NetNode = index }));
         private NodeID(ushort index, InstanceID implID) : base(index, implID) { }
+    }
+    public class SegmentID : BaseID<ushort>
+    {
+        internal static SegmentID _FromIndex(ushort index) => NullIfInvalid(
+                new SegmentID(index, new InstanceID { NetSegment = index }));
+        private SegmentID(ushort index, InstanceID implID) : base(index, implID) { }
+    }
+    public class DistrictID : BaseID<byte>
+    {
+        internal static DistrictID _FromIndex(byte index) => NullIfInvalid(
+                new DistrictID(index, new InstanceID { District = index }));
+        private DistrictID(byte index, InstanceID implID) : base(index, implID) { }
     }
 }

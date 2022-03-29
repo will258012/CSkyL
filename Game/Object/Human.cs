@@ -7,7 +7,7 @@ namespace CSkyL.Game.Object
 
     public class Human : Object<HumanID>
     {
-        public override string Name => manager.GetCitizenName(id.implIndex);
+        public override string Name => manager.GetCitizenName(id._index);
 
         public bool IsTourist => _Is(Citizen.Flags.Tourist);
         public bool IsStudent => _Is(Citizen.Flags.Student);
@@ -25,7 +25,7 @@ namespace CSkyL.Game.Object
         protected readonly Citizen _citizen;
 
         private static Citizen _GetCitizen(HumanID hid)
-            => manager.m_citizens.m_buffer[hid.implIndex];
+            => manager.m_citizens.m_buffer[hid._index];
         private static PedestrianID _GetPedestrianID(HumanID hid)
             => PedestrianID._FromIndex(_GetCitizen(hid).m_instance);
         private static readonly CitizenManager manager = CitizenManager.instance;
@@ -33,14 +33,14 @@ namespace CSkyL.Game.Object
 
     public class Pedestrian : Human, IObjectToFollow
     {
-        public override string Name => manager.GetCitizenName(id.implIndex);
+        public override string Name => manager.GetCitizenName(id._index);
 
         public bool IsEnteringVehicle => _Is(CitizenInstance.Flags.EnteringVehicle);
         public bool IsHangingAround => _Is(CitizenInstance.Flags.HangAround);
 
         public Positioning GetPositioning()
         {
-            _instance.GetSmoothPosition(pedestrianID.implIndex,
+            _instance.GetSmoothPosition(pedestrianID._index,
                                         out var position, out var rotation);
             return new Positioning(Position._FromVec(position), Angle._FromQuat(rotation));
         }
@@ -49,7 +49,7 @@ namespace CSkyL.Game.Object
         {
             var _c = _citizen;
             var status = _instance.Info.m_citizenAI.GetLocalizedStatus(
-                                pedestrianID.implIndex, ref _c, out var implID);
+                                pedestrianID._index, ref _c, out var implID);
             switch (ObjectID._FromIID(implID)) {
             case BuildingID bid: status += Building.GetName(bid); break;
             case NodeID nid:
@@ -87,7 +87,7 @@ namespace CSkyL.Game.Object
         }
 
         private static CitizenInstance _GetCitizenInstance(PedestrianID pid)
-            => manager.m_instances.m_buffer[pid.implIndex];
+            => manager.m_instances.m_buffer[pid._index];
         private static HumanID _GetHumanID(PedestrianID pid)
             => HumanID._FromIndex(_GetCitizenInstance(pid).m_citizen);
 

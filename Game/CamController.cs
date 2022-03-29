@@ -41,7 +41,6 @@ namespace CSkyL.Game
             if (_camTiltEffect != null) _camTiltEffect.enabled = false;
         }
 
-        // TODO: improvement: only works close to ground now.
         public Positioning LocateAt(Positioning positioning)
         {
             _controller.ClearTarget();

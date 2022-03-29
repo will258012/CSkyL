@@ -1,5 +1,6 @@
 namespace CSkyL.Game
 {
+    using ID;
     using UnityEngine;
     using Position = Transform.Position;
 
@@ -16,15 +17,21 @@ namespace CSkyL.Game
         public static float GetWaterLevel(Position position)
             => TerrainManager.instance.WaterLevel(position._AsVec2);
 
-        public static string RayCastRoad(Position position)
+        public static void RayCast(Position position,
+                            out SegmentID segmentID, out DistrictID districtID)
         {
             const float offset = 5f;
-            var pos = position._AsVec2;
-            return Tool.RayCastRoad(new Vector2(position.x, position.y)) ??
-                   Tool.RayCastRoad(new Vector2(position.x, position.y + offset)) ??
-                   Tool.RayCastRoad(new Vector2(position.x + offset, position.y)) ??
-                   Tool.RayCastRoad(new Vector2(position.x - offset, position.y)) ??
-                   Tool.RayCastRoad(new Vector2(position.x, position.y - offset));
+            var pos = position._AsVec;
+
+            segmentID = null; districtID = null;
+
+            foreach (var delta in new Vector3[] { Vector3.zero, Vector3.forward * offset,
+                                                  Vector3.left * offset, Vector3.right * offset,
+                                                  Vector3.back * offset }) {
+                Tool.RayCast(pos + delta, out var _segid, out var _did);
+                segmentID = segmentID ?? _segid; districtID = districtID ?? _did;
+                if (segmentID is object && districtID is object) return;
+            }
         }
 
         public static float GetMinHeightAt(Position position)
@@ -35,25 +42,24 @@ namespace CSkyL.Game
 
         private class Tool : ToolBase
         {
-            public static string RayCastRoad(Vector2 position)
+            public static void RayCast(Vector3 position,
+                                   out SegmentID segmentID, out DistrictID districtID)
             {
+                const float verticalRange = 100f;
                 RaycastInput rayCastInput = new RaycastInput(
-                                new Ray(new Vector3(position.x, 1000f, position.y),
-                                new Vector3(0, -1, 0)), 1000f);
+                        new Ray(position + Vector3.up * verticalRange, Vector3.down),
+                                verticalRange * 2f);
                 rayCastInput.m_netService.m_service = ItemClass.Service.Road;
                 rayCastInput.m_netService.m_itemLayers = ItemClass.Layer.Default |
-                                                         ItemClass.Layer.MetroTunnels;
+                                                         ItemClass.Layer.PublicTransport;
                 rayCastInput.m_ignoreSegmentFlags = NetSegment.Flags.None;
-                rayCastInput.m_ignoreNodeFlags = NetNode.Flags.None;
+                rayCastInput.m_ignoreDistrictFlags = District.Flags.None;
                 rayCastInput.m_ignoreTerrain = true;
 
-                string name = null;
-                if (ToolBase.RayCast(rayCastInput, out RaycastOutput result)) {
-                    name = NetManager.instance.GetSegmentName(result.m_netSegment);
-                    if (string.IsNullOrEmpty(name)) name = "(unnamed)";
-                }
+                RayCast(rayCastInput, out RaycastOutput result);
+                segmentID = SegmentID._FromIndex(result.m_netSegment);
+                districtID = DistrictID._FromIndex(result.m_district);
 
-                return name;
             }
         }
     }

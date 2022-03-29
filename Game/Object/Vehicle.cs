@@ -7,20 +7,20 @@ namespace CSkyL.Game.Object
 
     public abstract class Vehicle : Object<VehicleID>, IObjectToFollow
     {
-        public override string Name => manager.GetVehicleName(GetHeadVehicleID().implIndex);
+        public override string Name => manager.GetVehicleName(GetHeadVehicleID()._index);
 
         public Positioning GetPositioning()
         {
-            _vehicle.GetSmoothPosition(_vid.implIndex, out var position, out var rotation);
+            _vehicle.GetSmoothPosition(_vid._index, out var position, out var rotation);
             return new Positioning(Position._FromVec(position), Angle._FromQuat(rotation));
         }
-        public float GetSpeed() => _vehicle.GetSmoothVelocity(_vid.implIndex).magnitude;
+        public float GetSpeed() => _vehicle.GetSmoothVelocity(_vid._index).magnitude;
 
         public virtual string GetStatus()
         {
             var vehicle = _Of(GetHeadVehicleID());
             var status = vehicle._VAI.GetLocalizedStatus(
-                                vehicle._vid.implIndex, ref vehicle._vehicle, out var implID);
+                                vehicle._vid._index, ref vehicle._vehicle, out var implID);
             switch (ObjectID._FromIID(implID)) {
             case BuildingID bid: status += " " + Building.GetName(bid); break;
             case HumanID hid: status += " " + Of(hid).Name; break;
@@ -54,19 +54,19 @@ namespace CSkyL.Game.Object
 
         public float GetAttachOffsetFront() => _VInfo.m_attachOffsetFront;
         public VehicleID GetFrontVehicleID()
-            => VehicleID._FromIndex(IsReversed ? _vehicle.GetLastVehicle(_vid.implIndex) :
-                                               _vehicle.GetFirstVehicle(_vid.implIndex));
+            => VehicleID._FromIndex(IsReversed ? _vehicle.GetLastVehicle(_vid._index) :
+                                               _vehicle.GetFirstVehicle(_vid._index));
 
         public static VehicleID GetHeadVehicleIDof(VehicleID id)
-            => VehicleID._FromIndex(_GetVehicle(id).GetFirstVehicle(id.implIndex));
+            => VehicleID._FromIndex(_GetVehicle(id).GetFirstVehicle(id._index));
         public VehicleID GetHeadVehicleID()
-            => VehicleID._FromIndex(_vehicle.GetFirstVehicle(_vid.implIndex));
+            => VehicleID._FromIndex(_vehicle.GetFirstVehicle(_vid._index));
         public ObjectID GetOwnerID()
-            => ObjectID._FromIID(_VAI.GetOwnerID(_vid.implIndex, ref _vehicle));
+            => ObjectID._FromIID(_VAI.GetOwnerID(_vid._index, ref _vehicle));
         public TransitID GetTransitLineID() => TransitID._FromIndex(_vehicle.m_transportLine);
         // capacity == 0: invalid
         public void GetLoadAndCapacity(out int load, out int capacity)
-            => _VAI.GetBufferStatus(_vid.implIndex, ref _vehicle, out _, out load, out capacity);
+            => _VAI.GetBufferStatus(_vid._index, ref _vehicle, out _, out load, out capacity);
 
         public static IEnumerable<Vehicle> GetIf(System.Func<Vehicle, bool> filter)
         {
@@ -132,7 +132,7 @@ namespace CSkyL.Game.Object
         }
 
         private static global::Vehicle _GetVehicle(VehicleID id)
-            => manager.m_vehicles.m_buffer[id.implIndex];
+            => manager.m_vehicles.m_buffer[id._index];
         protected bool _Is(global::Vehicle.Flags flags) => (_vehicle.m_flags & flags) != 0;
         protected bool _IsOfService(ItemClass.Service service)
             => _vehicle.Info.GetService() == service;
