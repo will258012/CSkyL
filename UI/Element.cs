@@ -60,6 +60,10 @@
             get => Style.Color._From32(_UIComp.color);
             set => _UIComp.color = value._As32;
         }
+        public virtual float opacity {
+            get => _UIComp.opacity;
+            set => _UIComp.opacity = value;
+        }
 
         public virtual bool Visible {
             get => _UIComp.isVisible; set => _UIComp.isVisible = value;
@@ -75,10 +79,11 @@
         protected abstract Element _Create(Element parent, Properties props);
 
         internal protected abstract UIComponent _UIComp { get; }
+        internal protected virtual UIComponent _CompAsParent => _UIComp;
         internal protected virtual CompType _AddComp<CompType>(string name)
                                                     where CompType : UIComponent
         {
-            var comp = _UIComp.AddUIComponent<CompType>();
+            var comp = _CompAsParent.AddUIComponent<CompType>();
             comp.name = Style.Current.namePrefix + name;
             return comp;
         }
@@ -88,7 +93,7 @@
             var comp = UITemplateManager.GetAsGameObject(template);
             if (comp is null) return null;
             comp.name = Style.Current.namePrefix + name;
-            return _UIComp.AttachUIComponent(comp) as CompType;
+            return _CompAsParent.AttachUIComponent(comp) as CompType;
         }
 
         internal protected static void _SetPosition(
@@ -157,7 +162,9 @@
             return new Panel(panel);
         }
 
-        public bool AutoLayout { get => _panel.autoLayout; set => _panel.autoLayout = value; }
+        public virtual bool AutoLayout {
+            get => _panel.autoLayout; set => _panel.autoLayout = value;
+        }
 
         protected static void _SetAutoLayout(UIPanel panel, LayoutProperties props,
                                              bool startPadding = true)
@@ -179,6 +186,7 @@
                                 new UnityEngine.RectOffset(0, 0, 0, props.layoutGap);
                 }
             }
+            else panel.autoLayout = false;
         }
 
         internal protected override UIComponent _UIComp => _panel;
@@ -215,12 +223,20 @@
             return new Group(content, panel);
         }
 
-        public override void Destroy() => UnityEngine.Object.Destroy(_containerPanel);
+        public override bool AutoLayout {
+            get => _contentPanel.autoLayout; set => _contentPanel.autoLayout = value;
+        }
+        public float contentWidth {
+            get => _contentPanel.width; set => _contentPanel.width = value;
+        }
+        public float contentHeight {
+            get => _contentPanel.height; set => _contentPanel.height = value;
+        }
 
-        internal protected override UIComponent _UIComp => _panel;
-        protected Group(UIPanel contentPanel, UIPanel containerPanel) : base(contentPanel)
-        { _containerPanel = containerPanel; }
-        protected UIPanel _containerPanel;
+        internal protected override UIComponent _CompAsParent => _contentPanel;
+        protected Group(UIPanel contentPanel, UIPanel containerPanel) : base(containerPanel)
+        { _contentPanel = contentPanel; }
+        protected UIPanel _contentPanel;
     }
 
     public class Label : Element

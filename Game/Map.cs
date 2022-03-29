@@ -17,49 +17,56 @@ namespace CSkyL.Game
         public static float GetWaterLevel(Position position)
             => TerrainManager.instance.WaterLevel(position._AsVec2);
 
-        public static void RayCast(Position position,
-                            out SegmentID segmentID, out DistrictID districtID)
-        {
-            const float offset = 5f;
-            var pos = position._AsVec;
-
-            segmentID = null; districtID = null;
-
-            foreach (var delta in new Vector3[] { Vector3.zero, Vector3.forward * offset,
-                                                  Vector3.left * offset, Vector3.right * offset,
-                                                  Vector3.back * offset }) {
-                Tool.RayCast(pos + delta, out var _segid, out var _did);
-                segmentID = segmentID ?? _segid; districtID = districtID ?? _did;
-                if (segmentID is object && districtID is object) return;
-            }
-        }
-
         public static float GetMinHeightAt(Position position)
         {
             const float defaultOffset = 2f;
             return Mathf.Max(GetTerrainLevel(position), GetWaterLevel(position)) + defaultOffset;
         }
 
+        public static SegmentID RayCastRoad(Position position)
+        {
+            var input = Tool._GetRaycastInput(position._AsVec);
+            input.m_netService.m_service = ItemClass.Service.Road;
+            input.m_netService.m_itemLayers = ItemClass.Layer.Default |
+                                              ItemClass.Layer.PublicTransport;
+            input.m_ignoreSegmentFlags = NetSegment.Flags.None;
+
+            return SegmentID._FromIndex(Tool._RayCast(input)?.m_netSegment ?? 0);
+        }
+
+        public static DistrictID RayCastDistrict(Position position)
+        {
+            var input = Tool._GetRaycastInput(position._AsVec);
+            input.m_ignoreDistrictFlags = District.Flags.None;
+
+            return DistrictID._FromIndex(Tool._RayCast(input)?.m_district ?? 0);
+
+        }
+
         private class Tool : ToolBase
         {
-            public static void RayCast(Vector3 position,
-                                   out SegmentID segmentID, out DistrictID districtID)
+            internal static RaycastOutput? _RayCast(RaycastInput rayCastInput)
+            {
+                const float offset = 5f;
+
+                foreach (var delta in new Vector3[] { Vector3.zero, Vector3.forward * offset,
+                                                  Vector3.left * offset, Vector3.right * offset,
+                                                  Vector3.back * offset }) {
+                    var input = rayCastInput;
+                    rayCastInput.m_ray.origin = rayCastInput.m_ray.origin + delta;
+                    if (RayCast(rayCastInput, out RaycastOutput result)) return result;
+                }
+                return null;
+            }
+
+            internal static RaycastInput _GetRaycastInput(Vector3 position)
             {
                 const float verticalRange = 100f;
-                RaycastInput rayCastInput = new RaycastInput(
+                var input = new RaycastInput(
                         new Ray(position + Vector3.up * verticalRange, Vector3.down),
                                 verticalRange * 2f);
-                rayCastInput.m_netService.m_service = ItemClass.Service.Road;
-                rayCastInput.m_netService.m_itemLayers = ItemClass.Layer.Default |
-                                                         ItemClass.Layer.PublicTransport;
-                rayCastInput.m_ignoreSegmentFlags = NetSegment.Flags.None;
-                rayCastInput.m_ignoreDistrictFlags = District.Flags.None;
-                rayCastInput.m_ignoreTerrain = true;
-
-                RayCast(rayCastInput, out RaycastOutput result);
-                segmentID = SegmentID._FromIndex(result.m_netSegment);
-                districtID = DistrictID._FromIndex(result.m_district);
-
+                input.m_ignoreTerrain = true;
+                return input;
             }
         }
     }
