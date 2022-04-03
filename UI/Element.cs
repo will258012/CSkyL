@@ -30,7 +30,7 @@
         { TopLeft, TopRight, MiddleCenter, BottomLeft, BottomRight }
     }
 
-    public abstract class Element : Game.IRequireDestroyed
+    public abstract class Element : Game.IDestruction
     {
         public static readonly RootElement Root = new RootElement("");
 
@@ -70,8 +70,6 @@
         }
         public virtual void Enable() => _UIComp.Enable();
         public virtual void Disable() => _UIComp.Disable();
-
-        public virtual void Destroy() => UnityEngine.Object.Destroy(_UIComp);
 
         public ElemType Add<ElemType>(Properties props) where ElemType : Element, new()
             => (new ElemType())._Create(this, props) as ElemType;
@@ -140,7 +138,8 @@
 
         internal protected override UIComponent _UIComp => _comp;
         internal protected GameElement(UIComponent comp) { _comp = comp; }
-        private readonly UIComponent _comp;
+
+        [Game.RequireDestruction] private readonly UIComponent _comp;
     }
 
     public class LayoutProperties : Properties
@@ -192,7 +191,8 @@
         internal protected override UIComponent _UIComp => _panel;
         protected Panel(Panel panel) : this(panel._panel) { }
         protected Panel(UIPanel panel) { _panel = panel; }
-        protected readonly UIPanel _panel;
+
+        [Game.RequireDestruction] protected readonly UIPanel _panel;
     }
     public class SpritePanel : Panel
     {
@@ -261,7 +261,8 @@
         internal protected override UIComponent _UIComp => _label;
         protected Label(Label label) : this(label._label) { }
         private Label(UILabel label) { _label = label; }
-        private readonly UILabel _label;
+
+        [Game.RequireDestruction] private readonly UILabel _label;
     }
 
     public class TextButton : Element
@@ -291,7 +292,8 @@
         internal protected override UIComponent _UIComp => _btn;
         protected TextButton(TextButton button) : this(button._btn) { }
         private TextButton(UIButton button) { _btn = button; }
-        private readonly UIButton _btn;
+
+        [Game.RequireDestruction] private readonly UIButton _btn;
     }
     public class SpriteButton : Element
     {
@@ -325,7 +327,8 @@
         internal protected override UIComponent _UIComp => _btn;
         protected SpriteButton(SpriteButton button) : this(button._btn) { }
         private SpriteButton(UIButton button) { _btn = button; }
-        private readonly UIButton _btn;
+
+        [Game.RequireDestruction] private readonly UIButton _btn;
     }
 
     public class CheckBox : Element
@@ -349,7 +352,8 @@
         internal protected override UIComponent _UIComp => _box;
         protected CheckBox(CheckBox box) : this(box._box) { }
         private CheckBox(UICheckBox box) { _box = box; }
-        private readonly UICheckBox _box;
+
+        [Game.RequireDestruction] private readonly UICheckBox _box;
     }
 
     public class Slider : Element
@@ -412,7 +416,7 @@
         protected Slider(Slider slider) : this(slider._slider, slider._panel) { }
         private Slider(UISlider slider, UIPanel panel) { _slider = slider; _panel = panel; }
 
-        public readonly UIPanel _panel;
+        [Game.RequireDestruction] public readonly UIPanel _panel;
         public readonly UISlider _slider;
         private const float _valueLabelWidth = 60f;
     }
@@ -479,7 +483,7 @@
         private DropDown(UIDropDown dropdown, UIPanel panel)
         { _dropdown = dropdown; _panel = panel; }
 
-        public readonly UIPanel _panel;
+        [Game.RequireDestruction] public readonly UIPanel _panel;
         public readonly UIDropDown _dropdown;
     }
 
@@ -522,7 +526,7 @@
         protected KeyInput(KeyInput keyIput) : this(keyIput._panel, keyIput._button) { }
         private KeyInput(UIPanel panel, UIButton button) { _panel = panel; _button = button; }
 
-        public readonly UIPanel _panel;
+        [Game.RequireDestruction] public readonly UIPanel _panel;
         public readonly UIButton _button;
         private UnityEngine.KeyCode _key = UnityEngine.KeyCode.None;
 

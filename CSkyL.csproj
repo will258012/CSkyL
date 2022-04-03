@@ -78,6 +78,7 @@
     <Compile Include="UI\Element.cs" />
     <Compile Include="UI\InfoPanel.cs" />
     <Compile Include="UI\Style.cs" />
+    <Compile Include="UI\Debug.cs" />
     <Compile Include="Config\Base.cs" />
     <Compile Include="Config\Utils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

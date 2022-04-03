@@ -1,10 +1,10 @@
 ﻿namespace CSkyL.Game
 {
-    using CSkyL.Transform;
+    using Transform;
     using UnityEngine;
-    using Range = CSkyL.Math.Range;
+    using Range = Math.Range;
 
-    public class Cam
+    public class Cam : IDestruction
     {
         public virtual Positioning Positioning {
             get => new Positioning(Position._FromVec(_camera.transform.position),
@@ -36,9 +36,25 @@
 
         public bool IsFullScreen => Area.AlmostEquals(RenderArea.Full);
 
-        public Cam(Camera camGame) { _camera = camGame; }
+        // default: render later than this, on top of this
+        public Cam Clone(float deltaDepth = 1f / 8)
+        {
+            var obj = new GameObject(_camera.tag + "Copy");
+            obj.transform.SetParent(_camera.transform.parent);
+            obj.transform.rotation = _camera.transform.rotation;
+            obj.transform.position = _camera.transform.position;
+            var newCam = obj.AddComponent<Camera>();
+            newCam.CopyFrom(_camera);
+            newCam.tag = _camera.tag + "_copy";
+            newCam.depth += deltaDepth;
+            return new Cam(newCam);
+        }
 
-        protected readonly Camera _camera;
+        public Cam(Camera unityCam) { _camera = unityCam; _obj = _camera.gameObject; }
+        public Cam(Cam cam) : this(cam._camera) { }
+
+        private readonly Camera _camera;
+        [RequireDestruction] private readonly GameObject _obj;
 
         // value range [0, 1]
         // left to right, bottom to top
@@ -51,9 +67,9 @@
 
             public RenderArea(float left, float right, float bottom, float top)
             {
-                this.left = left; this.right = right; this.bottom = bottom; this.top = top;
                 if (left > right) { left = 0f; right = 1f; }
                 if (bottom > top) { bottom = 0f; top = 1f; }
+                this.left = left; this.right = right; this.bottom = bottom; this.top = top;
             }
 
             public bool AlmostEquals(RenderArea target)

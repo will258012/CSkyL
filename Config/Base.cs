@@ -12,6 +12,12 @@
         protected Base(string filePath)
         {
             _filePath = filePath;
+
+            Lang.LoadFieldNameAttribute(this,
+                (Lang.IFieldWithName field, ConfigAttribute attr) => {
+                    if (field is IConfigData config)
+                        config._set(attr.name, attr.description, attr.detail);
+                });
         }
 
         public virtual void Assign(Base other)

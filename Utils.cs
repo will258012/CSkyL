@@ -26,6 +26,9 @@ namespace CSkyL
         public static FieldReader<Target> ReadFields<Target>(Target target)
             => new FieldReader<Target>(target);
 
+        public static bool WithAtrribute<Attr>(this FieldInfo fieldInfo) where Attr : Attribute
+            => (fieldInfo.GetCustomAttributes(typeof(Attr), false) as Attr[])?.Any() ?? false;
+
         /* -------- Field Name Attribute ------------------------------------------------------- */
 
         [AttributeUsage(AttributeTargets.Field)]
@@ -44,10 +47,10 @@ namespace CSkyL
         public delegate void AttrLoader<in Attr>(IFieldWithName field, Attr attribute)
                                 where Attr : FieldNameAttribute;
 
-        public static void LoadFieldNameAttribute<Attr, T>(T obj, AttrLoader<Attr> attributeLoader)
+        public static void LoadFieldNameAttribute<Attr>(object obj, AttrLoader<Attr> attributeLoader)
                                     where Attr : FieldNameAttribute
         {
-            foreach (var fieldInfo in typeof(T).GetFields(
+            foreach (var fieldInfo in obj.GetType().GetFields(
                                             BindingFlags.Instance | BindingFlags.Public)) {
                 if (fieldInfo.GetValue(obj) is IFieldWithName field) {
                     var attrs = fieldInfo.GetCustomAttributes(typeof(Attr), false) as Attr[];

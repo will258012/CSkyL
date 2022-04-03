@@ -16,13 +16,12 @@ namespace CSkyL.Game
         }
         private static CamController _instance = null;
 
+        public UnityEngine.Camera Camera => _mainCamera;
+
         public TComp AddComponent<TComp>() where TComp : Behavior
             => _controller.gameObject.AddComponent<TComp>();
         public TComp GetComponent<TComp>() where TComp : UnityEngine.MonoBehaviour
             => _controller.gameObject.GetComponent<TComp>();
-
-        public UnityEngine.Camera GetCamera()
-            => Lang.ReadFields(_controller).Get<UnityEngine.Camera>("m_camera");
 
         public void SetDepthOfField(bool enabled)
         { if (_camDoF != null) _camDoF.enabled = enabled; }
@@ -64,6 +63,8 @@ namespace CSkyL.Game
         {
             _controller = ToolsModifierControl.cameraController;
             if (_controller is null) return;
+
+            _mainCamera = Lang.ReadFields(_controller).Get<UnityEngine.Camera>("m_camera");
             _camDoF = GetComponent<UnityStandardAssets.ImageEffects.DepthOfField>();
             _camTiltEffect = GetComponent<TiltShiftEffect>();
 
@@ -71,13 +72,14 @@ namespace CSkyL.Game
             if (_camTiltEffect != null) _oTiltEffectEnabled = _camTiltEffect.enabled;
         }
 
-        private CameraController _controller;
+        private readonly CameraController _controller;
+        private readonly UnityEngine.Camera _mainCamera;
 
-        private UnityStandardAssets.ImageEffects.DepthOfField _camDoF;
-        private TiltShiftEffect _camTiltEffect;
+        private readonly UnityStandardAssets.ImageEffects.DepthOfField _camDoF;
+        private readonly TiltShiftEffect _camTiltEffect;
 
-        private bool _oDoFEnabled;
-        private bool _oTiltEffectEnabled;
+        private readonly bool _oDoFEnabled;
+        private readonly bool _oTiltEffectEnabled;
 
         // simulate how CamController would work
         private Positioning _GetUpdatedPositioning()
@@ -87,7 +89,7 @@ namespace CSkyL.Game
             var targetPos = _controller.m_targetPosition;
             var targetAngle = _controller.m_targetAngle;
             var targetH = _controller.m_targetHeight;
-            var camera = GetCamera();
+            var camera = _mainCamera;
             var maxDist = _controller.m_maxDistance;
 
             var dist = 0f;
