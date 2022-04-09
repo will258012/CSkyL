@@ -4,7 +4,7 @@ namespace CSkyL.UI
     using System.Collections.Generic;
     using UnityEngine;
 
-    public class Debug : Game.UnityGUI
+    public class Debug : Game.Behavior
     {
         public static Debug Panel {
             get {
@@ -29,7 +29,7 @@ namespace CSkyL.UI
         public void RegisterAction(string actionName, System.Action action)
         { _nameList.Add(actionName); _actionList.Add(action); }
 
-        protected override void _UnityGUI()
+        private void OnGUI()
         {
             var boxWidth = Mathf.Min(Screen.width / 5f, 400f);
             var boxHeight = Mathf.Min(Screen.height / 2f, 1000f);

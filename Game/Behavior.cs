@@ -61,12 +61,6 @@
         }
     }
 
-    public abstract class UnityGUI : Behavior
-    {
-        private void OnGUI() { _UnityGUI(); }
-        protected abstract void _UnityGUI();
-    }
-
     public interface IDestruction { }
     public interface ICustomDestruction : IDestruction
     { void _Destruct(); }

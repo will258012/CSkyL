@@ -59,6 +59,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Mod.cs" />
     <Compile Include="Utils.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="Transform.cs" />
@@ -79,6 +80,8 @@
     <Compile Include="UI\InfoPanel.cs" />
     <Compile Include="UI\Style.cs" />
     <Compile Include="UI\Debug.cs" />
+    <Compile Include="UI\OptionsBase.cs" />
+    <Compile Include="UI\Setting.cs" />
     <Compile Include="Config\Base.cs" />
     <Compile Include="Config\Utils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
