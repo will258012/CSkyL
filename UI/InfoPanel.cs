@@ -5,7 +5,7 @@
     public abstract class Base : GameElement
     {
         public ObjectID GetObjectID()
-            => ObjectID._FromIID(Lang.ReadFields(_infoPanel).Get<InstanceID>("m_InstanceID"));
+            => ObjectID._FromIID(Lang.In(_infoPanel).Get<InstanceID>("m_InstanceID"));
 
         protected Base(WorldInfoPanel infoPanel) : base(infoPanel.component)
         { _infoPanel = infoPanel; }

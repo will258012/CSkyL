@@ -6,9 +6,9 @@
 
     public static class Helper
     {
-        public static float ScreenWidth => Lang.ReadFields(_UIView)
+        public static float ScreenWidth => Lang.In(_UIView)
                                                 .Get<Vector2>("m_CachedScreenResolution").x;
-        public static float ScreenHeight => Lang.ReadFields(_UIView)
+        public static float ScreenHeight => Lang.In(_UIView)
                                                 .Get<Vector2>("m_CachedScreenResolution").y;
 
         public static void MakeDraggable(this Element element,

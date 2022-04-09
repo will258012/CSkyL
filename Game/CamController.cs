@@ -9,7 +9,7 @@ namespace CSkyL.Game
             get {
                 if (_instance is null || _instance._controller == null) {
                     _instance = new CamController();
-                    if (_instance._controller is null) return _instance = null;
+                    if (_instance._controller is null) _instance = null;
                 }
                 return _instance;
             }
@@ -62,9 +62,9 @@ namespace CSkyL.Game
         private CamController()
         {
             _controller = ToolsModifierControl.cameraController;
-            if (_controller is null) return;
+            if (_controller == null) return;
 
-            _mainCamera = Lang.ReadFields(_controller).Get<UnityEngine.Camera>("m_camera");
+            _mainCamera = Lang.In(_controller).Get<UnityEngine.Camera>("m_camera");
             _camDoF = GetComponent<UnityStandardAssets.ImageEffects.DepthOfField>();
             _camTiltEffect = GetComponent<TiltShiftEffect>();
 

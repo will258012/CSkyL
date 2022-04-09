@@ -7,16 +7,23 @@ namespace CSkyL.UI
     public class Debug : Game.UnityGUI
     {
         public static Debug Panel {
-            get => _panel ?? (_panel = Game.CamController.I.AddComponent<Debug>());
+            get {
+                if (_panel == null) _panel = Game.CamController.I.AddComponent<Debug>();
+                return _panel;
+            }
         }
 
         protected override void _Init() => enabled = true;
+
+        public static void DestroyPanel()
+        { if (_panel != null) Destroy(_panel); }
 
         public void AppendMessage(string msg)
         {
             if (_msgCount < msgLimit) ++_msgCount;
             else _message = _message.Substring(_message.IndexOf('\n') + 1);
             _message += msg + "\n";
+            enabled = true;
         }
 
         public void RegisterAction(string actionName, System.Action action)
@@ -27,9 +34,9 @@ namespace CSkyL.UI
             var boxWidth = Mathf.Min(Screen.width / 5f, 400f);
             var boxHeight = Mathf.Min(Screen.height / 2f, 1000f);
 
-            GUI.color = new Color(0f, 0f, 0f, .9f);
             GUI.Box(new Rect(0f, boxHeight / 2f, boxWidth, boxHeight), "");
-            GUI.color = new Color(1f, 1f, 1f, 1f);
+            if (GUI.Button(new Rect(boxWidth, boxHeight / 2f, 20f, 20f), "X"))
+                enabled = false;
 
             var style = new GUIStyle
             {

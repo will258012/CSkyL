@@ -7,24 +7,42 @@ namespace CSkyL
 
     public static class Lang
     {
-        public class FieldReader<Target>
+        public class _Object<Target>
         {
-            public FieldReader(Target target) => _target = target;
+            public _Object(Target target) => _target = target;
             public Field Get<Field>(string fieldName)
             {
-                var field = typeof(Target).GetField(fieldName,
-                                                  BindingFlags.Instance | BindingFlags.Static |
-                                                  BindingFlags.Public | BindingFlags.NonPublic);
-                if (field is null) {
-                    Log.Warn($"GetField fails: <{fieldName}> not of <{typeof(Target).Name}>");
-                    return default;
-                }
-                return (Field) field.GetValue(_target);
+                if (typeof(Target).GetField(fieldName,
+                                            BindingFlags.Instance | BindingFlags.Static |
+                                            BindingFlags.Public | BindingFlags.NonPublic)
+                            is FieldInfo field)
+                    return (Field) field.GetValue(_target);
+
+                Log.Warn($"GetField fails: <{fieldName}> not of <{typeof(Target).Name}>");
+                return default;
+            }
+            public void Set<Field>(string fieldName, Field value)
+            {
+                if (typeof(Target).GetField(fieldName,
+                                            BindingFlags.Instance | BindingFlags.Static |
+                                            BindingFlags.Public | BindingFlags.NonPublic)
+                            is FieldInfo field)
+                    field.SetValue(_target, value);
+                else Log.Warn($"SetField fails: <{fieldName}> not of <{typeof(Target).Name}>");
+            }
+            public void Invoke(string methodName, params object[] args)
+            {
+                if (typeof(Target).GetMethod(methodName,
+                                            BindingFlags.Instance | BindingFlags.Static |
+                                            BindingFlags.Public | BindingFlags.NonPublic)
+                            is MethodInfo method)
+                    method.Invoke(_target, args);
+                else Log.Warn($"MethodInvoke fails: <{methodName}> not of <{typeof(Target).Name}>");
             }
             private readonly Target _target;
         }
-        public static FieldReader<Target> ReadFields<Target>(Target target)
-            => new FieldReader<Target>(target);
+        public static _Object<Target> In<Target>(Target target)
+            => new _Object<Target>(target);
 
         public static bool WithAtrribute<Attr>(this FieldInfo fieldInfo) where Attr : Attribute
             => (fieldInfo.GetCustomAttributes(typeof(Attr), false) as Attr[])?.Any() ?? false;
