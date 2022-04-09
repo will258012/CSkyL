@@ -3,17 +3,26 @@
     using CitiesHarmony.API;
     using HarmonyLib;
     using System.Collections.Generic;
-    using Log = CSkyL.Log;
 
     public static class Patcher
     {
         public static void PatchOnReady(System.Reflection.Assembly assembly)
         {
-            HarmonyHelper.DoOnHarmonyReady(() => Patch(assembly));
+            try {
+                HarmonyHelper.DoOnHarmonyReady(() => Patch(assembly));
+            }
+            catch (System.Exception e) {
+                Log.Err("Harmony: " + e.ToString());
+            }
         }
         public static void TryUnpatch(System.Reflection.Assembly assembly)
         {
-            if (HarmonyHelper.IsHarmonyInstalled) Unpatch(assembly);
+            try {
+                if (HarmonyHelper.IsHarmonyInstalled) Unpatch(assembly);
+            }
+            catch (System.Exception e) {
+                Log.Err("Harmony: " + e.ToString());
+            }
         }
 
         public static void Patch(System.Reflection.Assembly assembly)
@@ -54,6 +63,9 @@
                 Log.Err(" -- unpatching fails: " + e.ToString());
             }
         }
+
+        public static bool HasPatched(System.Reflection.Assembly assembly)
+            => _patchedAssemblies.Contains(assembly.GetName().Name);
 
         private static List<string> _patchedAssemblies = new List<string>();
     }

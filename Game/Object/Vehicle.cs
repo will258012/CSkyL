@@ -121,7 +121,7 @@ namespace CSkyL.Game.Object
             case FishingBoatAI fishingBoatAi_: return new MissionVehicle(id);
 
             default:
-                CSkyL.Log.Warn($"Vehicle(ID:{id} of type [{ai.GetType().Name}] is not recognized.");
+                Log.Warn($"Vehicle(ID:{id} of type [{ai.GetType().Name}] is not recognized.");
                 return null;
             }
         }

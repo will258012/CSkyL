@@ -16,19 +16,19 @@
 
     public class TransitVehicle : Vehicle
     {
-        public TransitVehicle(VehicleID id, string typeName) : base(id) { _typeName = typeName; }
+        public TransitVehicle(VehicleID id, string transitType) : base(id)
+        { _transitType = transitType; }
 
         public override void _MoreDetails(ref Utils.Infos details)
         {
-            details["Transit/" + _typeName] = GetTransitLineID() is TransitID id ?
-                    TransitLine.GetName(id) : "(irregular)";
+            details["Transit"] = $"{_transitType}> " + (GetTransitLineID() is TransitID id ?
+                                                       TransitLine.GetName(id) : "(irregular)");
 
             GetLoadAndCapacity(out int load, out int capacity);
             details["Passenger"] = $"{load,4} /{capacity,4}";
-
         }
 
-        private readonly string _typeName;
+        private readonly string _transitType;
     }
 
     public class ServiceVehicle : Vehicle
