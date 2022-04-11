@@ -42,6 +42,7 @@
                         foreach (var item in enumerable)
                             stack.Push(new _DestroyTask { obj = item, type = item.GetType() });
                         break;
+                    case null: break;
                     default:
                         Log.Warn($" -- field <{field.Name}> of type <{field.FieldType.Name}> " +
                                  $"does not implement <IDestruction>");

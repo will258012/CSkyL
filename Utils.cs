@@ -10,34 +10,44 @@ namespace CSkyL
         public class _Object<Target>
         {
             public _Object(Target target) => _target = target;
-            public Field Get<Field>(string fieldName)
+            public Field Get<Field>(string fieldName, Type type = null)
             {
-                if (typeof(Target).GetField(fieldName,
-                                            BindingFlags.Instance | BindingFlags.Static |
-                                            BindingFlags.Public | BindingFlags.NonPublic)
+                type = type ?? typeof(Target);
+                if (type.GetField(fieldName, BindingFlags.Instance | BindingFlags.Static |
+                                             BindingFlags.Public | BindingFlags.NonPublic)
                             is FieldInfo field)
                     return (Field) field.GetValue(_target);
 
-                Log.Warn($"GetField fails: <{fieldName}> not of <{typeof(Target).Name}>");
+                if (type.BaseType is Type baseType && baseType != typeof(object))
+                    return Get<Field>(fieldName, baseType);
+                else Log.Warn($"GetField fails: <{fieldName}> not of <{typeof(Target).Name}>" +
+                              $"(up to <{type.Name}>)");
                 return default;
             }
-            public void Set<Field>(string fieldName, Field value)
+            public void Set<Field>(string fieldName, Field value, Type type = null)
             {
-                if (typeof(Target).GetField(fieldName,
-                                            BindingFlags.Instance | BindingFlags.Static |
-                                            BindingFlags.Public | BindingFlags.NonPublic)
+                type = type ?? typeof(Target);
+                if (type.GetField(fieldName, BindingFlags.Instance | BindingFlags.Static |
+                                             BindingFlags.Public | BindingFlags.NonPublic)
                             is FieldInfo field)
                     field.SetValue(_target, value);
-                else Log.Warn($"SetField fails: <{fieldName}> not of <{typeof(Target).Name}>");
+                else if (type.BaseType is Type baseType && baseType != typeof(object))
+                    Set(fieldName, value, baseType);
+                else Log.Warn($"SetField fails: <{fieldName}> not of <{typeof(Target).Name}>" +
+                              $"(up to <{type.Name}>)");
             }
             public void Invoke(string methodName, params object[] args)
+                => Invoke(methodName, typeof(Target), args: args);
+            public void Invoke(string methodName, Type type, params object[] args)
             {
-                if (typeof(Target).GetMethod(methodName,
-                                            BindingFlags.Instance | BindingFlags.Static |
-                                            BindingFlags.Public | BindingFlags.NonPublic)
+                if (type.GetMethod(methodName, BindingFlags.Instance | BindingFlags.Static |
+                                               BindingFlags.Public | BindingFlags.NonPublic)
                             is MethodInfo method)
                     method.Invoke(_target, args);
-                else Log.Warn($"MethodInvoke fails: <{methodName}> not of <{typeof(Target).Name}>");
+                else if (type.BaseType is Type baseType && baseType != typeof(object))
+                    Invoke(methodName, baseType, args: args);
+                else Log.Warn($"Invoke fails: <{methodName}> not of <{typeof(Target).Name}>" +
+                              $"(up to <{type.Name}>)");
             }
             private readonly Target _target;
         }
