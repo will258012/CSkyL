@@ -15,15 +15,14 @@ namespace CSkyL
 
         public void OnEnabled()
         {
+            var assembly = _Assembly;
+
             Log.Logger = new FileLog(ShortName);
-            Log.Msg("Mod: enabled - v" +
-                    Assembly.GetExecutingAssembly().GetName().Version);
+            Log.Msg($"Mod: {ShortName} enabled - v" + assembly.GetName().Version);
 
             LoadConfig();
-            Log.Msg("Config: loaded");
 
-            if (_AssemblyToPatch is Assembly assembly)
-                Harmony.Patcher.PatchOnReady(assembly);
+            Harmony.Patcher.PatchOnReady(assembly);
 
             _PostEnable();
         }
@@ -31,9 +30,7 @@ namespace CSkyL
         public void OnDisabled()
         {
             _PreDisable();
-
-            if (_AssemblyToPatch is Assembly assembly)
-                Harmony.Patcher.TryUnpatch(assembly);
+            Harmony.Patcher.TryUnpatch(_Assembly);
 
             Log.Msg("Mod disabled.");
         }
@@ -43,9 +40,9 @@ namespace CSkyL
         {
             Log.Msg("Mod: level loaded in: " + mode.ToString());
 
-            if (_AssemblyToPatch is Assembly assembly)
-                if (!Harmony.Patcher.HasPatched(assembly))
-                    Harmony.Patcher.PatchOnReady(assembly);
+            var assembly = _Assembly;
+            if (!Harmony.Patcher.HasPatched(assembly))
+                Harmony.Patcher.PatchOnReady(assembly);
 
             _PostLoad();
         }
@@ -69,6 +66,6 @@ namespace CSkyL
         public abstract void LoadConfig();
         public abstract void ResetConfig();
 
-        protected virtual Assembly _AssemblyToPatch => null;
+        protected abstract Assembly _Assembly { get; }
     }
 }
