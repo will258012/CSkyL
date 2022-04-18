@@ -22,7 +22,10 @@ namespace CSkyL
 
             LoadConfig();
 
-            Harmony.Patcher.PatchOnReady(assembly);
+            try { Harmony.Patcher.PatchOnReady(assembly); }
+            catch (System.IO.FileNotFoundException e) {
+                Log.Err("Assembly of Harmony is missing: " + e.Message);
+            }
 
             _PostEnable();
         }
@@ -30,7 +33,11 @@ namespace CSkyL
         public void OnDisabled()
         {
             _PreDisable();
-            Harmony.Patcher.TryUnpatch(_Assembly);
+
+            try { Harmony.Patcher.TryUnpatch(_Assembly); }
+            catch (System.IO.FileNotFoundException e) {
+                Log.Err("Assembly of Harmony is missing: " + e.Message);
+            }
 
             Log.Msg("Mod disabled.");
         }
@@ -40,9 +47,14 @@ namespace CSkyL
         {
             Log.Msg("Mod: level loaded in: " + mode.ToString());
 
-            var assembly = _Assembly;
-            if (!Harmony.Patcher.HasPatched(assembly))
-                Harmony.Patcher.PatchOnReady(assembly);
+            try {
+                var assembly = _Assembly;
+                if (!Harmony.Patcher.HasPatched(assembly))
+                    Harmony.Patcher.PatchOnReady(assembly);
+            }
+            catch (System.IO.FileNotFoundException e) {
+                Log.Err("Assembly of Harmony is missing: " + e.Message);
+            }
 
             _PostLoad();
         }
