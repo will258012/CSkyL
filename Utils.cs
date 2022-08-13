@@ -168,7 +168,9 @@ namespace CSkyL
                 this.max = float.IsNaN(max) ? float.MaxValue :
                                               max < min ? min : max;
             }
+
             public float min, max;
+            public float Size => max - min;
         }
 
         public static bool InRange(this float value, Range range)
