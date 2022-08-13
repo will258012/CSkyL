@@ -35,15 +35,16 @@ namespace CSkyL.Game.Object
     {
         public override string Name => manager.GetCitizenName(id._index);
 
+        public bool IsWaitingTransit => _Is(CitizenInstance.Flags.WaitingTransport);
         public bool IsEnteringVehicle => _Is(CitizenInstance.Flags.EnteringVehicle);
         public bool IsHangingAround => _Is(CitizenInstance.Flags.HangAround);
-        
+
         public Position GetTargetPos(int index) => Position._FromVec(GetCitizenInstance().m_targetPos);
         public byte GetLastFrame() => GetCitizenInstance().m_lastFrame;
         public uint GetTargetFrame()
         {
             // see decompiler CitizenInstance.GetSmoothPosition()
-            uint i = (uint)(_pid >> 12); // = (_pid << 4 ) *65536
+            uint i = (uint) (_pid >> 12); // = (_pid << 4 ) *65536
             return SimulationManager.instance.m_referenceFrameIndex - i;
         }
 
@@ -99,7 +100,7 @@ namespace CSkyL.Game.Object
             => ref _GetCitizenInstance(pedestrianID);
 
         private static ref CitizenInstance _GetCitizenInstance(PedestrianID pid)
-            => ref  manager.m_instances.m_buffer[pid._index];
+            => ref manager.m_instances.m_buffer[pid._index];
         private static HumanID _GetHumanID(PedestrianID pid)
             => HumanID._FromIndex(_GetCitizenInstance(pid).m_citizen);
 
