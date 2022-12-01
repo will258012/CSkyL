@@ -28,7 +28,7 @@
 
         internal Vector2 _AsVec2 => new Vector2(x, y);
         internal Vector _AsVec => new Vector(x, up, y);
-        internal static Position _FromVec(Vector position)
+        public static Position _FromVec(Vector position)
             => new Position { x = position.x, y = position.z, up = position.y };
 
         public static Position Lerp(Position a, Position b, float t)

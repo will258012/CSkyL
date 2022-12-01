@@ -1,6 +1,8 @@
 namespace CSkyL.Game.Object
 {
     using CSkyL.Game.ID;
+    using CSkyL.Transform;
+    using UnityEngine;
 
     public interface IObject
     {
@@ -9,11 +11,12 @@ namespace CSkyL.Game.Object
     }
     public interface IObjectToFollow : IObject
     {
-        Transform.Position GetTargetPos(int index);
+        void GetPathInfo(out uint pathUnitID, out byte lastOffset, out byte finePathPositionIndex, out Vector3 refPos, out Vector3 velocity);
+        Position GetTargetPos(int index);
         byte GetLastFrame();
         uint GetTargetFrame();
         float GetSpeed();
-        Transform.Positioning GetPositioning();
+        Positioning GetPositioning();
         Utils.Infos GetInfos();
         string GetStatus();
         string GetPrefabName();

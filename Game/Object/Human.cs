@@ -4,6 +4,7 @@ namespace CSkyL.Game.Object
     using CSkyL.Transform;
     using System.Collections.Generic;
     using System.Linq;
+    using UnityEngine;
 
     public class Human : Object<HumanID>
     {
@@ -38,6 +39,16 @@ namespace CSkyL.Game.Object
         public bool IsWaitingTransit => _Is(CitizenInstance.Flags.WaitingTransport);
         public bool IsEnteringVehicle => _Is(CitizenInstance.Flags.EnteringVehicle);
         public bool IsHangingAround => _Is(CitizenInstance.Flags.HangAround);
+
+        public void GetPathInfo(out uint pathUnitID, out byte lastOffset, out byte finePathPositionIndex, out Vector3 refPos, out Vector3 velocity)
+        {
+            ref CitizenInstance citizenInstance = ref GetCitizenInstance();
+            pathUnitID = citizenInstance.m_path;
+            lastOffset = citizenInstance.m_lastPathOffset;
+            finePathPositionIndex = citizenInstance.m_pathPositionIndex;
+            refPos = citizenInstance.GetLastFramePosition();
+            velocity = citizenInstance.GetLastFrameData().m_velocity;
+        }
 
         public Position GetTargetPos(int index) => Position._FromVec(GetCitizenInstance().m_targetPos);
         public byte GetLastFrame() => GetCitizenInstance().m_lastFrame;
