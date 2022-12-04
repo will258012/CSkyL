@@ -4,23 +4,25 @@ namespace CSkyL.Game.Object
     using CSkyL.Transform;
     using System.Collections.Generic;
     using System.Linq;
-    using UnityEngine;
 
     public abstract class Vehicle : Object<VehicleID>, IObjectToFollow
     {
         public override string Name => manager.GetVehicleName(GetHeadVehicleID()._index);
 
-        public void GetPathInfo(out uint pathUnitID, out byte lastOffset, out byte finePathPositionIndex, out Vector3 refPos, out Vector3 velocity)
+        public PathData GetPathData()
         {
             ref global::Vehicle vehicle = ref GetVehicle();
-            pathUnitID = vehicle.m_path;
-            lastOffset = vehicle.m_lastPathOffset;
-            finePathPositionIndex = vehicle.m_pathPositionIndex;
-            refPos = vehicle.GetLastFramePosition();
-            velocity = vehicle.GetLastFrameData().m_velocity;
+            return new PathData(
+                vehicle.m_path,
+                vehicle.m_lastPathOffset,
+                vehicle.m_pathPositionIndex,
+                vehicle.GetLastFramePosition(),
+                vehicle.GetLastFrameData().m_velocity
+            );
         }
 
-        public Position GetTargetPos(int index) => Position._FromVec(GetVehicle().GetTargetPos(index));
+        public Position GetTargetPos(int index)
+            => Position._FromVec(GetVehicle().GetTargetPos(index));
         public byte GetLastFrame() => GetVehicle().m_lastFrame;
         public uint GetTargetFrame()
         {

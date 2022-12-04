@@ -1,6 +1,5 @@
 ﻿namespace CSkyL.Transform
 {
-    using UnityEngine;
     using Quaternion = UnityEngine.Quaternion;
     using Range = Math.Range;
     using Vector = UnityEngine.Vector3;
@@ -28,12 +27,13 @@
 
         internal Vector2 _AsVec2 => new Vector2(x, y);
         internal Vector _AsVec => new Vector(x, up, y);
-        public static Position _FromVec(Vector position)
+        internal static Position _FromVec(Vector position)
             => new Position { x = position.x, y = position.z, up = position.y };
 
         public static Position Lerp(Position a, Position b, float t)
         {
-            return new Position {
+            return new Position
+            {
                 x = a.x + (b.x - a.x) * t,
                 y = a.y + (b.y - a.y) * t,
                 up = a.up + (b.up - a.up) * t

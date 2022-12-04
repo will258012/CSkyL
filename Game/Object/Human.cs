@@ -4,7 +4,6 @@ namespace CSkyL.Game.Object
     using CSkyL.Transform;
     using System.Collections.Generic;
     using System.Linq;
-    using UnityEngine;
 
     public class Human : Object<HumanID>
     {
@@ -40,17 +39,20 @@ namespace CSkyL.Game.Object
         public bool IsEnteringVehicle => _Is(CitizenInstance.Flags.EnteringVehicle);
         public bool IsHangingAround => _Is(CitizenInstance.Flags.HangAround);
 
-        public void GetPathInfo(out uint pathUnitID, out byte lastOffset, out byte finePathPositionIndex, out Vector3 refPos, out Vector3 velocity)
+        public PathData GetPathData()
         {
             ref CitizenInstance citizenInstance = ref GetCitizenInstance();
-            pathUnitID = citizenInstance.m_path;
-            lastOffset = citizenInstance.m_lastPathOffset;
-            finePathPositionIndex = citizenInstance.m_pathPositionIndex;
-            refPos = citizenInstance.GetLastFramePosition();
-            velocity = citizenInstance.GetLastFrameData().m_velocity;
+            return new PathData(
+                citizenInstance.m_path,
+                citizenInstance.m_lastPathOffset,
+                citizenInstance.m_pathPositionIndex,
+                citizenInstance.GetLastFramePosition(),
+                citizenInstance.GetLastFrameData().m_velocity
+            );
         }
 
-        public Position GetTargetPos(int index) => Position._FromVec(GetCitizenInstance().m_targetPos);
+        public Position GetTargetPos(int index)
+            => Position._FromVec(GetCitizenInstance().m_targetPos);
         public byte GetLastFrame() => GetCitizenInstance().m_lastFrame;
         public uint GetTargetFrame()
         {
@@ -122,7 +124,8 @@ namespace CSkyL.Game.Object
             pedestrianID = pid;
         }
 
-        private bool _Is(CitizenInstance.Flags flags) => (GetCitizenInstance().m_flags & flags) != 0;
+        private bool _Is(CitizenInstance.Flags flags)
+            => (GetCitizenInstance().m_flags & flags) != 0;
 
         public readonly PedestrianID pedestrianID;
         private ushort _pid => pedestrianID._index;

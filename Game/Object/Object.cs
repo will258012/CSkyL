@@ -4,6 +4,24 @@ namespace CSkyL.Game.Object
     using CSkyL.Transform;
     using UnityEngine;
 
+    public struct PathData
+    {
+        uint pathUnitID;
+        byte lastOffset;
+        byte finePathPositionIndex;
+        Vector3 refPos, velocity;
+
+        public PathData(uint pathUnitID, byte lastOffset, byte finePathPositionIndex,
+                        Vector3 refPos, Vector3 velocity)
+        {
+            this.pathUnitID = pathUnitID;
+            this.lastOffset = lastOffset;
+            this.finePathPositionIndex = finePathPositionIndex;
+            this.refPos = refPos;
+            this.velocity = velocity;
+        }
+    }
+
     public interface IObject
     {
         string Name { get; }
@@ -11,7 +29,7 @@ namespace CSkyL.Game.Object
     }
     public interface IObjectToFollow : IObject
     {
-        void GetPathInfo(out uint pathUnitID, out byte lastOffset, out byte finePathPositionIndex, out Vector3 refPos, out Vector3 velocity);
+        PathData GetPathData();
         Position GetTargetPos(int index);
         byte GetLastFrame();
         uint GetTargetFrame();
