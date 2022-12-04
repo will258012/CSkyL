@@ -52,6 +52,7 @@
     <Reference Include="UnityEngine" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Game\PathUtil.cs" />
     <Compile Include="Mod.cs" />
     <Compile Include="UI\OverlayUtil.cs" />
     <Compile Include="Utils.cs" />

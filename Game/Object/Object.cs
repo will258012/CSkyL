@@ -6,10 +6,10 @@ namespace CSkyL.Game.Object
 
     public struct PathData
     {
-        uint pathUnitID;
-        byte lastOffset;
-        byte finePathPositionIndex;
-        Vector3 refPos, velocity;
+        public uint pathUnitID;
+        public byte lastOffset;
+        public byte finePathPositionIndex;
+        public Vector3 refPos, velocity;
 
         public PathData(uint pathUnitID, byte lastOffset, byte finePathPositionIndex,
                         Vector3 refPos, Vector3 velocity)
