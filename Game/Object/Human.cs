@@ -87,16 +87,16 @@ namespace CSkyL.Game.Object
             Utils.Infos details = new Utils.Infos();
 
             string occupation;
-            if (IsTourist) occupation = "(tourist)";
+            if (IsTourist) occupation = "(旅客)";
             else {
                 occupation = Of(WorkBuildingID) is Building workBuilding ?
-                                 (IsStudent ? "student at: " : "worker at: ") + workBuilding.Name :
-                                 "(unemployed)";
+                                 "在 " + workBuilding.Name + (IsStudent ? " 上学" : " 工作"):
+                                 "(失业)";
 
-                details["Home"] = Of(HomeBuildingID) is Building homeBuilding ?
-                                      homeBuilding.Name : "(homeless)";
+                details["住址"] = Of(HomeBuildingID) is Building homeBuilding ?
+                                      homeBuilding.Name : "(无家可归)";
             }
-            details["Occupation"] = occupation;
+            details["职业"] = occupation;
 
             return details;
         }

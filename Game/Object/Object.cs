@@ -64,7 +64,7 @@ namespace CSkyL.Game.Object
         public override string Name {
             get {
                 var name = InstanceManager.instance.GetName(id._iID);
-                return string.IsNullOrEmpty(name) ? "(unknown)" : name;
+                return string.IsNullOrEmpty(name) ? "(未知)" : name;
             }
         }
         protected Object(IDType id) { this.id = id; }

@@ -58,9 +58,9 @@ namespace CSkyL.Game.Object
             var vehicle = _Of(GetHeadVehicleID());
             switch (vehicle.GetOwnerID()) {
             case BuildingID buildingID:
-                details["Owner"] = Building.GetName(buildingID); break;
+                details["所属"] = Building.GetName(buildingID); break;
             case HumanID humanID:
-                details["Owner"] = Of(humanID).Name; break;
+                details["所属"] = Of(humanID).Name; break;
             }
 
             vehicle._MoreDetails(ref details);
