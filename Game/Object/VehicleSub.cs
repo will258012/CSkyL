@@ -21,8 +21,8 @@
 
         public override void _MoreDetails(ref Utils.Infos details)
         {
-            details["交通"] = $"{_transitType}> " + (GetTransitLineID() is TransitID id ?
-                                                       TransitLine.GetName(id) : "(irregular)");
+            details["线路"] = $"{_transitType}> " + (GetTransitLineID() is TransitID id ?
+                                                       TransitLine.GetName(id) : "(外部)");
 
             GetLoadAndCapacity(out int load, out int capacity);
             details["乘客数"] = $"{load,4} /{capacity,4}";
@@ -46,14 +46,14 @@
     }
     public class Taxi : ServiceVehicle
     {
-        public Taxi(VehicleID id) : base(id, "taxi") { }
+        public Taxi(VehicleID id) : base(id, "出租车") { }
 
         public override void _MoreDetails(ref Utils.Infos details)
         {
             base._MoreDetails(ref details);
 
-            if (details.Find((_info) => _info.field == "Load") is Utils.Info info)
-                info = new Utils.Info("Work Shift", info.text);
+            if (details.Find((_info) => _info.field == "已装载") is Utils.Info info)
+                info = new Utils.Info("轮班", info.text);
         }
     }
 

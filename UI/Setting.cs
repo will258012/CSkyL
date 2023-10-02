@@ -97,7 +97,7 @@ namespace CSkyL.UI
             {
                 x = padding, y = label.bottom + padding,
                 width = panel.width - padding, wideCondition = true,
-                text = "Forward direction",
+                text = "前移",
                 config = config.forward, configObj = configProps.configObj,
                 stepSize = .05f, valueFormat = "F2"
             };
@@ -105,12 +105,12 @@ namespace CSkyL.UI
             var forward = panel.Add<SliderSetting>(sliderProp);
 
             sliderProp.y += forward.height + padding;
-            sliderProp.text = "Up direction"; sliderProp.config = config.up;
+            sliderProp.text = "上移"; sliderProp.config = config.up;
             sliderProp.SetUpFromConfig();
             var up = panel.Add<SliderSetting>(sliderProp);
 
             sliderProp.y += up.height + padding;
-            sliderProp.text = "Right direction"; sliderProp.config = config.right;
+            sliderProp.text = "右移"; sliderProp.config = config.right;
             sliderProp.SetUpFromConfig();
             var right = panel.Add<SliderSetting>(sliderProp);
 
