@@ -142,7 +142,8 @@ namespace CSkyL.Game.Object
 
             case BalloonAI balloonAi:
             case FishingBoatAI fishingBoatAi_: return new MissionVehicle(id);
-
+            //Fix that the bank service vehicle in the Financial Districts DLC cannot enter FPScamera
+            case BankVanAI bankvanAi_________: return new ServiceVehicle(id, "银行");
             default:
                 Log.Warn($"Vehicle(ID:{id} of type [{ai.GetType().Name}] is not recognized.");
                 return null;
