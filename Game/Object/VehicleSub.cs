@@ -9,7 +9,7 @@
         public override void _MoreDetails(ref Utils.Infos details)
         {
             GetLoadAndCapacity(out int load, out int capacity);
-            details["已装载"] = capacity > 0 ? ((float) load / capacity).ToString("P1")
+            details["负载量"] = capacity > 0 ? ((float)load / capacity).ToString("P1")
                                          : "(无效)";
         }
     }
@@ -40,10 +40,11 @@
             details["服务"] = _typeName;
 
             GetLoadAndCapacity(out int load, out int capacity);
-            if (capacity > 0) details["已装载"] = ((float) load / capacity).ToString("P1");
+            if (capacity > 0) details["负载量"] = ((float)load / capacity).ToString("P1");
         }
         private readonly string _typeName;
     }
+//Fix the mechanism that replaces 'Load' with 'Work Shift' ('负载量' 替换为 '轮班') does not work
     public class Taxi : ServiceVehicle
     {
         public Taxi(VehicleID id) : base(id, "出租车") { }
@@ -51,12 +52,30 @@
         public override void _MoreDetails(ref Utils.Infos details)
         {
             base._MoreDetails(ref details);
+            int index = details.FindIndex((_info) => _info.field == "负载量");
+            if (index >= 0)
+            {
 
-            if (details.Find((_info) => _info.field == "已装载") is Utils.Info info)
-                info = new Utils.Info("轮班", info.text);
+                details[index] = new Utils.Info("轮班", details[index].text);
+            }
         }
     }
+    //Add the same mechanism to replace 'Load' with 'Work shift' for Maintenance cars
+    public class Maintenance : ServiceVehicle
+    {
+        public Maintenance(VehicleID id) : base(id, "养护") { }
 
+        public override void _MoreDetails(ref Utils.Infos details)
+        {
+            base._MoreDetails(ref details);
+            int index = details.FindIndex((_info) => _info.field == "负载量");
+            if (index >= 0)
+            {
+
+                details[index] = new Utils.Info("轮班", details[index].text);
+            }
+        }
+    }
     public class PersonalVehicle : Vehicle
     {
         public PersonalVehicle(VehicleID id) : base(id) { }
