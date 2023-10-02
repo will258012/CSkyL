@@ -9,8 +9,8 @@
         public override void _MoreDetails(ref Utils.Infos details)
         {
             GetLoadAndCapacity(out int load, out int capacity);
-            details["Load"] = capacity > 0 ? ((float) load / capacity).ToString("P1")
-                                         : "(invalid)";
+            details["已装载"] = capacity > 0 ? ((float) load / capacity).ToString("P1")
+                                         : "(无效)";
         }
     }
 
@@ -21,11 +21,11 @@
 
         public override void _MoreDetails(ref Utils.Infos details)
         {
-            details["Transit"] = $"{_transitType}> " + (GetTransitLineID() is TransitID id ?
+            details["交通"] = $"{_transitType}> " + (GetTransitLineID() is TransitID id ?
                                                        TransitLine.GetName(id) : "(irregular)");
 
             GetLoadAndCapacity(out int load, out int capacity);
-            details["Passenger"] = $"{load,4} /{capacity,4}";
+            details["乘客数"] = $"{load,4} /{capacity,4}";
         }
 
         private readonly string _transitType;
@@ -37,10 +37,10 @@
 
         public override void _MoreDetails(ref Utils.Infos details)
         {
-            details["Service"] = _typeName;
+            details["服务"] = _typeName;
 
             GetLoadAndCapacity(out int load, out int capacity);
-            if (capacity > 0) details["Load"] = ((float) load / capacity).ToString("P1");
+            if (capacity > 0) details["已装载"] = ((float) load / capacity).ToString("P1");
         }
         private readonly string _typeName;
     }
