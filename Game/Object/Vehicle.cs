@@ -128,9 +128,9 @@ namespace CSkyL.Game.Object
             case PoliceCopterAI pCopterAi:
             case PoliceCarAI policeCarAi_____: return new ServiceVehicle(id, "警察");
             case GarbageTruckAI gTruckAi_____: return new ServiceVehicle(id, "垃圾清运");
-            case HearseAI hearseAi___________: return new ServiceVehicle(id, "死亡护理");
+            case HearseAI hearseAi___________: return new ServiceVehicle(id, "遗体处理");
             case MaintenanceTruckAI mTruckAi_:
-            case ParkMaintenanceVehicleAI pm_: return new ServiceVehicle(id, "道路养护");
+            case ParkMaintenanceVehicleAI pm_: return new Maintenance(id);
             case PostVanAI postVanAi_________: return new ServiceVehicle(id, "邮政");
             case SnowTruckAI snowTruckAi_____: return new ServiceVehicle(id, "除雪");
             case WaterTruckAI waterTruckAi___: return new ServiceVehicle(id, "抽水");
