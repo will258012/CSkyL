@@ -90,12 +90,11 @@ namespace CSkyL.Game.Object
             if (IsTourist) occupation = "(旅客)";
             else {
                 occupation = Of(WorkBuildingID) is Building workBuilding ?
-                                 "在 " + workBuilding.Name + (IsStudent ? " 上学" : " 工作"):
-                                 "(失业)";
+                                 "在 " + workBuilding.Name + (IsStudent ? " 上学" : " 工作") : "(失业)";
 
                 details["住址"] = Of(HomeBuildingID) is Building homeBuilding ?
                                       homeBuilding.Name : "(无家可归)";
-            }
+            }   
             details["职业"] = occupation;
 
             return details;
