@@ -571,7 +571,7 @@
                 if (input._action is object) input._action(input.Key);
             }
             else {
-                input._button.text = "(Press a key)";
+                input._button.text = "(按下需绑定的键)";
                 input._button.Focus();
                 UIView.PushModal(input._button);
                 input._waitingInput = true;
