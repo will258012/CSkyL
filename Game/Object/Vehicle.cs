@@ -58,9 +58,9 @@ namespace CSkyL.Game.Object
             var vehicle = _Of(GetHeadVehicleID());
             switch (vehicle.GetOwnerID()) {
             case BuildingID buildingID:
-                details["所属"] = Building.GetName(buildingID); break;
+                details["拥有者"] = Building.GetName(buildingID); break;
             case HumanID humanID:
-                details["所属"] = Of(humanID).Name; break;
+                details["拥有者"] = Of(humanID).Name; break;
             }
 
             vehicle._MoreDetails(ref details);
@@ -102,17 +102,17 @@ namespace CSkyL.Game.Object
         {
             var ai = _GetVehicle(GetHeadVehicleIDof(id)).Info.m_vehicleAI;
             switch (ai) {
-            case BusAI busAi_________________: return new TransitVehicle(id, "Bus");
-            case TramAI tramAi_______________: return new TransitVehicle(id, "Tram");
-            case MetroTrainAI metroTrainAi___: return new TransitVehicle(id, "Metro");
-            case PassengerTrainAI pTrainAi___: return new TransitVehicle(id, "Train");
-            case PassengerPlaneAI pPlaneAi___: return new TransitVehicle(id, "Flight");
-            case PassengerBlimpAI pBlimpAi___: return new TransitVehicle(id, "Blimp");
-            case CableCarAI cableCarAi_______: return new TransitVehicle(id, "Gondola");
-            case TrolleybusAI trolleybusAi___: return new TransitVehicle(id, "Trolleybus");
-            case PassengerFerryAI pFerryAi___: return new TransitVehicle(id, "Ferry");
-            case PassengerShipAI pShipAi_____: return new TransitVehicle(id, "Ship");
-            case PassengerHelicopterAI phAi__: return new TransitVehicle(id, "Helicopter");
+            case BusAI busAi_________________: return new TransitVehicle(id, "巴士");
+            case TramAI tramAi_______________: return new TransitVehicle(id, "电车");
+            case MetroTrainAI metroTrainAi___: return new TransitVehicle(id, "地铁");
+            case PassengerTrainAI pTrainAi___: return new TransitVehicle(id, "火车");
+            case PassengerPlaneAI pPlaneAi___: return new TransitVehicle(id, "飞机");
+            case PassengerBlimpAI pBlimpAi___: return new TransitVehicle(id, "飞艇");
+            case CableCarAI cableCarAi_______: return new TransitVehicle(id, "热气球");
+            case TrolleybusAI trolleybusAi___: return new TransitVehicle(id, "无轨电车");
+            case PassengerFerryAI pFerryAi___: return new TransitVehicle(id, "渡轮");
+            case PassengerShipAI pShipAi_____: return new TransitVehicle(id, "船舶");
+            case PassengerHelicopterAI phAi__: return new TransitVehicle(id, "直升机");
 
             case CargoTruckAI cargoTruckAi:
             case CargoTrainAI cargoTrainAi:
@@ -120,20 +120,20 @@ namespace CSkyL.Game.Object
             case CargoPlaneAI cargoPlaneAi___: return new CargoVehicle(id);
 
             case AmbulanceAI ambulanceAi:
-            case AmbulanceCopterAI aCopterAi_: return new ServiceVehicle(id, "Medical");
+            case AmbulanceCopterAI aCopterAi_: return new ServiceVehicle(id, "医疗保健");
             case DisasterResponseVehicleAI dr:
-            case DisasterResponseCopterAI drc: return new ServiceVehicle(id, "Disaster Response");
+            case DisasterResponseCopterAI drc: return new ServiceVehicle(id, "灾难救援");
             case FireCopterAI fireCopterAi:
-            case FireTruckAI fireTruckAi_____: return new ServiceVehicle(id, "Firefighting");
+            case FireTruckAI fireTruckAi_____: return new ServiceVehicle(id, "消防");
             case PoliceCopterAI pCopterAi:
-            case PoliceCarAI policeCarAi_____: return new ServiceVehicle(id, "Police");
-            case GarbageTruckAI gTruckAi_____: return new ServiceVehicle(id, "Garbage");
-            case HearseAI hearseAi___________: return new ServiceVehicle(id, "Deathcare");
+            case PoliceCarAI policeCarAi_____: return new ServiceVehicle(id, "警察");
+            case GarbageTruckAI gTruckAi_____: return new ServiceVehicle(id, "垃圾清运");
+            case HearseAI hearseAi___________: return new ServiceVehicle(id, "死亡护理");
             case MaintenanceTruckAI mTruckAi_:
-            case ParkMaintenanceVehicleAI pm_: return new ServiceVehicle(id, "Maintenance");
-            case PostVanAI postVanAi_________: return new ServiceVehicle(id, "Postal");
-            case SnowTruckAI snowTruckAi_____: return new ServiceVehicle(id, "Snow Plowing");
-            case WaterTruckAI waterTruckAi___: return new ServiceVehicle(id, "Water Pumping");
+            case ParkMaintenanceVehicleAI pm_: return new ServiceVehicle(id, "道路养护");
+            case PostVanAI postVanAi_________: return new ServiceVehicle(id, "邮政");
+            case SnowTruckAI snowTruckAi_____: return new ServiceVehicle(id, "除雪");
+            case WaterTruckAI waterTruckAi___: return new ServiceVehicle(id, "抽水");
             case TaxiAI taxiAi_______________: return new Taxi(id);
 
             case PrivatePlaneAI pPlaneAi:
