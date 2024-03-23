@@ -142,6 +142,7 @@ namespace CSkyL.Game.Object
 
             case BalloonAI balloonAi:
             case FishingBoatAI fishingBoatAi_: return new MissionVehicle(id);
+            case BankVanAI bankvanAi_________: return new ServiceVehicle(id, "Bank");
 
             default:
                 Log.Warn($"Vehicle(ID:{id} of type [{ai.GetType().Name}] is not recognized.");

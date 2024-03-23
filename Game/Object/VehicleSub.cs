@@ -44,6 +44,22 @@
         }
         private readonly string _typeName;
     }
+
+    public class Maintenance : ServiceVehicle
+    {
+        public Maintenance(VehicleID id) : base(id, "Maintenance") { }
+
+        public override void _MoreDetails(ref Utils.Infos details)
+        {
+            base._MoreDetails(ref details);
+
+            int index = details.FindIndex((_info) => _info.field == "Load");
+            if (index >= 0) {
+
+                details[index] = new Utils.Info("Work Shift", details[index].text);
+            }
+        }
+    }
     public class Taxi : ServiceVehicle
     {
         public Taxi(VehicleID id) : base(id, "taxi") { }
@@ -52,8 +68,11 @@
         {
             base._MoreDetails(ref details);
 
-            if (details.Find((_info) => _info.field == "Load") is Utils.Info info)
-                info = new Utils.Info("Work Shift", info.text);
+            int index = details.FindIndex((_info) => _info.field == "Load");
+            if (index >= 0) {
+
+                details[index] = new Utils.Info("Work Shift", details[index].text);
+            }
         }
     }
 
