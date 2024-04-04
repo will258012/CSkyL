@@ -69,6 +69,9 @@ namespace CSkyL.Game.Object
         public virtual void _MoreDetails(ref Utils.Infos details) { }
 
         public bool IsSpawned => _Is(global::Vehicle.Flags.Spawned);
+        public bool IsGoingBack => _Is(global::Vehicle.Flags.GoingBack);
+        public bool IsExporting => _Is(global::Vehicle.Flags.Exporting);
+        public bool IsImporting => _Is(global::Vehicle.Flags.Importing);
         public bool IsReversed => _Is(global::Vehicle.Flags.Reversed);
         public bool IsHead => GetVehicle().m_leadingVehicle == 0;
         public bool IsEnd => GetVehicle().m_trailingVehicle == 0;
