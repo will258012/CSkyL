@@ -52,6 +52,9 @@
     <Reference Include="UnityEngine" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Translation\Language.cs" />
+    <Compile Include="Translation\Translations.cs" />
+    <Compile Include="Translation\Translator.cs" />
     <Compile Include="Game\PathUtil.cs" />
     <Compile Include="Mod.cs" />
     <Compile Include="UI\OverlayUtil.cs" />
