@@ -13,6 +13,8 @@ namespace CSkyL.Translation
     using System.Text;
     using ColossalFramework;
     using ColossalFramework.Globalization;
+    using ColossalFramework.Plugins;
+    using static ColossalFramework.Plugins.PluginManager;
 
     /// <summary>
     /// Language changed event.
@@ -139,13 +141,13 @@ namespace CSkyL.Translation
                 else
                 {
                     // Lookup failed - fallack translation.
-                    Log.Warn("no translation for language " + activeLanguage.Code + " found for key " + key);
+                    Log.Warn("[Translator] no translation for language " + activeLanguage.Code + " found for key " + key);
                     return FallbackTranslation(activeLanguage.Code, key);
                 }
             }
             else
             {
-                Log.Err("no current language when translating key " + key);
+                Log.Err("[Translator] no current language when translating key " + key);
             }
 
             // If we've made it this far, something went wrong; just return the key.
@@ -162,11 +164,11 @@ namespace CSkyL.Translation
             // Null check.
             if (languageCode.IsNullOrWhiteSpace())
             {
-                Log.Err("empty language code passed tp Translator.SetLanguage");
+                Log.Err("[Translator] empty language code passed tp Translator.SetLanguage");
                 return;
             }
 
-            Log.Msg("setting language to " + languageCode);
+            Log.Msg("[Translator] setting language to " + languageCode);
 
             // Default (game) language.
             if (languageCode == "default")
@@ -189,14 +191,14 @@ namespace CSkyL.Translation
                 if (entry.Key.StartsWith(shortCode))
                 {
                     // Found an alternative.
-                    Log.Msg("using language " + entry.Key + " as replacement for unknown language code " + languageCode);
+                    Log.Msg("[Translator] using language " + entry.Key + " as replacement for unknown language code " + languageCode);
                     SetLanguage(_languages.IndexOfKey(entry.Key));
                     return;
                 }
             }
 
             // If we got here, no match was found; revert to system language.
-            Log.Msg("no suitable translation file for language " + languageCode + " was found; reverting to game default");
+            Log.Msg("[Translator] no suitable translation file for language " + languageCode + " was found; reverting to game default");
             SetLanguage(-1);
         }
 
@@ -245,7 +247,7 @@ namespace CSkyL.Translation
                     }
 
                     // Set the new system language,
-                    Log.Msg("game language is " + newLanguageCode);
+                    Log.Msg("[Translator] game language is " + newLanguageCode);
                     _systemLangaugeCode = newLanguageCode;
                     _systemLanguage = FindLanguage(newLanguageCode);
 
@@ -261,7 +263,7 @@ namespace CSkyL.Translation
                 catch (Exception e)
                 {
                     // Don't really care.
-                    Log.Err(e + "exception setting system language");
+                    Log.Err("[Translator] " + e + "exception setting system language");
                 }
             }
 
@@ -291,12 +293,12 @@ namespace CSkyL.Translation
             if (!string.IsNullOrEmpty(firstMatch.Key))
             {
                 // Found one - return translation.
-                Log.Msg("using translation file "  + firstMatch.Key + " for language " + languageCode);
+                Log.Msg("[Translator] using translation file " + firstMatch.Key + " for language " + languageCode);
                 return firstMatch.Value;
             }
 
             // Fall back to default language.
-            Log.Err("no translation file found for language " + languageCode + "; reverting to " + _defaultLanguage);
+            Log.Err("[Translator] no translation file found for language " + languageCode + "; reverting to " + _defaultLanguage);
             return _languages[_defaultLanguage];
         }
 
@@ -327,7 +329,7 @@ namespace CSkyL.Translation
             catch (Exception e)
             {
                 // Don't care.  Just log the exception, as we really should have a default language.
-                Log.Err(e + "exception attempting fallback translation for key " + key + " at: " + Environment.NewLine + Environment.StackTrace);
+                Log.Err("[Translator] " + e + "exception attempting fallback translation for key " + key + " at: " + Environment.NewLine + Environment.StackTrace);
             }
 
             // At this point we've failed; just return the key.
@@ -343,10 +345,10 @@ namespace CSkyL.Translation
             _languages.Clear();
 
             // Get the current assembly path and append our locale directory name.
-            string assemblyPath = Assembly.GetExecutingAssembly().Location;
+            string assemblyPath = AssemblyPath;
             if (assemblyPath.IsNullOrWhiteSpace())
             {
-                Log.Err("assembly path was empty");
+                Log.Err("[Translator] assembly path was empty:" + assemblyPath);
                 return;
             }
 
@@ -356,10 +358,10 @@ namespace CSkyL.Translation
             // Ensure that the directory exists before proceeding.
             if (!Directory.Exists(translationsPath))
             {
-                Log.Err("translations directory not found");
+                Log.Err("[Translator] translations directory not found");
                 return;
             }
-
+            Log.Msg("[Translator] Loading translations files in " + translationsPath);
             // Load translation files in top directory.
             LoadLanguages(Directory.GetFiles(translationsPath, "*.csv", SearchOption.TopDirectoryOnly), true);
 
@@ -488,14 +490,14 @@ namespace CSkyL.Translation
                             // Was key empty?
                             if (key.IsNullOrWhiteSpace())
                             {
-                                Log.Err("invalid key in line " + line);
+                                Log.Err("[Translator] invalid key in line " + line);
                                 goto Reset;
                             }
 
                             // Did we get two delimited fields (key and value?)
                             if (parseKey | builder.Length == 0)
                             {
-                                Log.Err("no value field found in line " + line);
+                                Log.Err("[Translator] no value field found in line " + line);
                                 goto Reset;
                             }
 
@@ -522,7 +524,7 @@ namespace CSkyL.Translation
                                     // Ignore duplicates for language name key.
                                     if (key != Language.NameKey)
                                     {
-                                        Log.Err("duplicate translation key " + key + " in file " + translationFile);
+                                        Log.Err("[Translator] duplicate translation key " + key + " in file " + translationFile);
                                     }
                                 }
                             }
@@ -541,7 +543,7 @@ namespace CSkyL.Translation
                         // Did we get a valid dictionary from this?
                         if (thisLanguage.Code != null && addedEntries > 0)
                         {
-                            Log.Msg("read translation file " + translationFile + " with language " + thisLanguage.Code +
+                            Log.Msg("[Translator] read translation file " + translationFile + " with language " + thisLanguage.Code +
                                 " (" + thisLanguage.Name + ") with " + addedEntries + " added entries");
 
                             // Do we have an existing entry for this language?
@@ -555,12 +557,12 @@ namespace CSkyL.Translation
 
                                 // Add new language here (done here instead of earlier to avoid adding any languages without any valid translations).
                                 {
-                                    Log.Msg("adding new language entry");
+                                    Log.Msg("[Translator] adding new language entry");
 
                                     // If we didn't get a readable name, use the key instead.
                                     if (thisLanguage.Name.IsNullOrWhiteSpace())
                                     {
-                                        Log.Err("no language name provided; using language code instead");
+                                        Log.Err("[Translator] no language name provided; using language code instead");
                                         thisLanguage.Name = thisLanguage.Code;
                                     }
                                 }
@@ -571,15 +573,43 @@ namespace CSkyL.Translation
                         }
                         else
                         {
-                            Log.Err("file "+ translationFile + " did not produce a valid translation dictionary");
+                            Log.Err("[Translator] file " + translationFile + " did not produce a valid translation dictionary");
                         }
                     }
                 }
                 catch (Exception e)
                 {
                     // Don't let a single exception stop us; keep going through remaining files.
-                    Log.Err(e + "exception reading translation file " + translationFile);
+                    Log.Err("[Translator] " + e + "exception reading translation file " + translationFile);
                 }
+            }
+        }
+        private static string AssemblyPath {
+            get {
+
+                // No path cached - get list of currently active plugins.
+                Assembly thisAssembly = Assembly.GetExecutingAssembly();
+                IEnumerable<PluginInfo> plugins = PluginManager.instance.GetPluginsInfo();
+
+                // Iterate through list.
+                foreach (PluginInfo plugin in plugins) {
+                    try {
+                        // Iterate through each assembly in plugins
+                        foreach (Assembly assembly in plugin.GetAssemblies()) {
+                            if (assembly == thisAssembly) {
+                                return plugin.modPath;
+                            }
+                        }
+                    }
+                    catch (Exception e) {
+                        // Don't care; just don't let a single failure stop us iterating through the plugins.
+                        Log.Err("[Translator] " + e + "exception iterating through plugins");
+                    }
+                }
+
+                // If we got here, then we didn't find the assembly.
+                Log.Err("[Translator] assembly path not found");
+                return null;
             }
         }
     }
