@@ -3,6 +3,7 @@
     using ColossalFramework.UI;
     using Vec2 = UnityEngine.Vector2;
     using Vec3 = UnityEngine.Vector3;
+    using CTransl = Translation.Translations;
 
     /*  Usage Examples:
      * 
@@ -487,6 +488,79 @@
         public readonly UIDropDown _dropdown;
     }
 
+    public class LangDropDown : Element
+    {
+        public int Choiced {
+            get {
+                try { 
+                    return _dropdown.selectedIndex;
+                }
+                catch { }
+                return default;
+            }
+            set {
+                try {
+                    int index = System.Array.IndexOf(_dropdown.items, value);
+                    if (index >= 0)
+                        _dropdown.selectedIndex = value;
+
+                }
+                catch { }
+            }
+        }
+        public void SetTriggerAction(System.Action<int> action)
+            => _dropdown.eventSelectedIndexChanged += (_, value) => action(Choiced);
+        public LangDropDown() { }
+
+        protected override Element _Create(Element parent, Properties props)
+        {
+            var localPadding = Style.Current._padding / 3f;
+
+            var panel = parent._AddTemplate<UIPanel>("OptionsDropdownTemplate", props.name);
+            panel.autoLayout = false;
+            _SetPosition(panel, parent._UIComp, props);
+            var width = props.width > 0f ? props.width : parent.width - panel.relativePosition.x;
+            panel.width = width; panel.autoLayout = false;
+
+            var label = panel.Find<UILabel>("Label");
+            label.text = props.text; label.tooltip = props.tooltip;
+            label.textScale = Style.Current._scale;
+            label.textColor = Style.Current._textColor;
+            if (props.wideCondition) label.width = width / 2f - localPadding;
+            label.anchor = UIAnchorStyle.Left | UIAnchorStyle.Top;
+            label.relativePosition = new Vec3(0f, localPadding * 2f);
+
+            var dropdown = panel.Find<UIDropDown>("Dropdown");
+            dropdown.tooltip = props.tooltip;
+            dropdown.textColor = dropdown.popupTextColor = Style.Current._textColor;
+            dropdown.color = dropdown.popupColor = Style.Current._color;
+            if (!props.wideCondition)
+                dropdown.width = width - label.width - localPadding * (2f + 1f);
+            else if (dropdown.width > width / 2f) dropdown.width = width / 2f;
+
+            dropdown.height = label.height + localPadding * 2f;
+            dropdown.relativePosition = props.wideCondition ?
+                            new Vec3(width / 2f, localPadding) :
+                            new Vec3(width - dropdown.width - localPadding, localPadding);
+            dropdown.textScale = .9f * Style.Current._scale;
+            dropdown.textFieldPadding = new UnityEngine.RectOffset(11, 5, 7, 0);
+            dropdown.itemPadding = new UnityEngine.RectOffset(10, 5, 8, 0);
+            dropdown.items = CTransl.LanguageList;
+            panel.autoSize = false;
+            panel.height = dropdown.height + localPadding * 2f;
+            return new LangDropDown(dropdown, panel);
+        }
+
+
+        internal protected override UIComponent _UIComp => _panel;
+        protected LangDropDown(LangDropDown dropdown)
+            : this(dropdown._dropdown, dropdown._panel) { }
+        private LangDropDown(UIDropDown dropdown, UIPanel panel)
+        { _dropdown = dropdown; _panel = panel; }
+
+        [Game.RequireDestruction] public readonly UIPanel _panel;
+        public readonly UIDropDown _dropdown;
+    }
 
     public class KeyInput : Element
     {
@@ -571,7 +645,7 @@
                 if (input._action is object) input._action(input.Key);
             }
             else {
-                input._button.text = "(按下需绑定的键)";
+                input._button.text = CTransl.Translate("PRESS_ANY_KEY");
                 input._button.Focus();
                 UIView.PushModal(input._button);
                 input._waitingInput = true;

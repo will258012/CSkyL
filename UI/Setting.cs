@@ -1,5 +1,5 @@
 ﻿using CSkyL.Config;
-
+using CTransl = CSkyL.Translation.Translations;
 namespace CSkyL.UI
 {
     public interface ISetting
@@ -175,5 +175,33 @@ namespace CSkyL.UI
         { _config = config; }
 
         private readonly ConfigData<UnityEngine.KeyCode> _config;
+    }
+
+    public class LangSetting : LangDropDown, ISetting
+    {
+        public LangSetting() { }
+        public void UpdateUI() { 
+            if (!Choiced.Equals(_config)) 
+                Choiced = _config;
+                if(_dropdown.selectedIndex != _config)
+               _dropdown.selectedIndex = _config;
+        }
+
+        protected override Element _Create(Element parent, Properties props)
+        {
+            var configProps = props as SettingProperties;
+            configProps.SetUpFromConfig();
+            var dropdown = base._Create(parent, configProps) as LangDropDown;
+            var config = configProps.config as ConfigData<int>;
+            dropdown.Choiced = config;
+            dropdown.SetTriggerAction((value)
+                => { config.Assign(value); configProps.configObj.Save(); });
+            return new LangSetting(dropdown, config);
+        }
+
+        private LangSetting(LangDropDown dropdown, ConfigData<int> config)
+            : base(dropdown) { _config = config; }
+
+        private readonly ConfigData<int> _config;
     }
 }
