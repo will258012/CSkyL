@@ -9,6 +9,7 @@ namespace CSkyL.Translation
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
+    using System.Reflection;
     using System.Text;
     using ColossalFramework;
     using ColossalFramework.Globalization;
@@ -260,7 +261,7 @@ namespace CSkyL.Translation
                 catch (Exception e)
                 {
                     // Don't really care.
-                    Logging.LogException(e, "exception setting system language");
+                    Log.Err(e + "exception setting system language");
                 }
             }
 
@@ -342,12 +343,13 @@ namespace CSkyL.Translation
             _languages.Clear();
 
             // Get the current assembly path and append our locale directory name.
-            string assemblyPath = AssemblyUtils.AssemblyPath;
+            string assemblyPath = Assembly.GetExecutingAssembly().Location;
             if (assemblyPath.IsNullOrWhiteSpace())
             {
                 Log.Err("assembly path was empty");
                 return;
             }
+
 
             string translationsPath = Path.Combine(assemblyPath, "Translations");
 
