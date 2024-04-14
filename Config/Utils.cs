@@ -8,8 +8,8 @@
     {
         public readonly string description;
         public readonly string detail;
-        public ConfigAttribute(string name, string description, string detail = "") : base(name)
-        { this.description = description; this.detail = detail; }
+        public ConfigAttribute(string name, string TranslateDescription_Key, string TranslateDetail_Key = "") : base(name)
+        { this.description = Translation.Translations.Translate(TranslateDescription_Key); this.detail = Translation.Translations.Translate(TranslateDetail_Key); }
     }
     public interface IConfigData : Lang.IFieldWithName
     {
