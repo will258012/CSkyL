@@ -57,6 +57,7 @@ namespace CSkyL.Translation
                 if (_translator == null)
                 {
                     _translator = new Translator();
+                    Index = Utils.GetConfigLanguageIndex();
                 }
 
                 return _translator;
