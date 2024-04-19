@@ -183,7 +183,7 @@ namespace CSkyL.UI
         public void UpdateUI() { 
             if (!Choiced.Equals(_config)) 
                 Choiced = _config;
-                if(_dropdown.selectedIndex != _config)
+            if(_dropdown.selectedIndex != _config)
                _dropdown.selectedIndex = _config;
         }
 
