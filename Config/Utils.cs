@@ -9,7 +9,10 @@
         public readonly string description;
         public readonly string detail;
         public ConfigAttribute(string name, string TranslateDescription_Key, string TranslateDetail_Key = "") : base(name)
-        { this.description = Translation.Translations.Translate(TranslateDescription_Key); this.detail = Translation.Translations.Translate(TranslateDetail_Key); }
+        { this.description = Translation.Translations.Translate(TranslateDescription_Key);
+            //there's no need to translate if "TranslateDetail_Key" is not set
+            if (!string.IsNullOrEmpty(this.detail)) this.detail = Translation.Translations.Translate(TranslateDetail_Key);
+        }
     }
     public interface IConfigData : Lang.IFieldWithName
     {
