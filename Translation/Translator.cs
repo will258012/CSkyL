@@ -9,12 +9,9 @@ namespace CSkyL.Translation
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
-    using System.Reflection;
     using System.Text;
     using ColossalFramework;
     using ColossalFramework.Globalization;
-    using ColossalFramework.Plugins;
-    using static ColossalFramework.Plugins.PluginManager;
 
     /// <summary>
     /// Language changed event.
@@ -100,8 +97,8 @@ namespace CSkyL.Translation
             get
             {
                 // Are we using the game language setting?
-                if (_currentIndex < 0)
-                {
+                if (_currentIndex < 0) 
+                    {    
                     // Using game language - initialise system language if we haven't already, or if the system language has changed since last time.
                     if (LocaleManager.exists & (LocaleManager.instance.language != _systemLangaugeCode | _systemLanguage == null))
                     {
@@ -209,6 +206,8 @@ namespace CSkyL.Translation
         /// <param name="index">1-based language index number (negative values will use system language settings instead).</param>
         public void SetLanguage(int index)
         {
+            Log.Msg("[Translator] setting language to index: " + index);
+
             // Don't do anything if no languages have been loaded.
             if (_languages != null && _languages.Count > 0)
             {
@@ -345,7 +344,7 @@ namespace CSkyL.Translation
             _languages.Clear();
 
             // Get the current assembly path and append our locale directory name.
-            string assemblyPath = AssemblyPath;
+            string assemblyPath = Utils.AssemblyPath;
             if (assemblyPath.IsNullOrWhiteSpace())
             {
                 Log.Err("[Translator] assembly path was empty:" + assemblyPath);
@@ -582,34 +581,6 @@ namespace CSkyL.Translation
                     // Don't let a single exception stop us; keep going through remaining files.
                     Log.Err("[Translator] " + e + "exception reading translation file " + translationFile);
                 }
-            }
-        }
-        private static string AssemblyPath {
-            get {
-
-                // No path cached - get list of currently active plugins.
-                Assembly thisAssembly = Assembly.GetExecutingAssembly();
-                IEnumerable<PluginInfo> plugins = PluginManager.instance.GetPluginsInfo();
-
-                // Iterate through list.
-                foreach (PluginInfo plugin in plugins) {
-                    try {
-                        // Iterate through each assembly in plugins
-                        foreach (Assembly assembly in plugin.GetAssemblies()) {
-                            if (assembly == thisAssembly) {
-                                return plugin.modPath;
-                            }
-                        }
-                    }
-                    catch (Exception e) {
-                        // Don't care; just don't let a single failure stop us iterating through the plugins.
-                        Log.Err("[Translator] " + e + "exception iterating through plugins");
-                    }
-                }
-
-                // If we got here, then we didn't find the assembly.
-                Log.Err("[Translator] assembly path not found");
-                return null;
             }
         }
     }
