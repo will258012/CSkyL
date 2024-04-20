@@ -4,7 +4,7 @@ namespace CSkyL.Game.Object
     using CSkyL.Transform;
     using System.Collections.Generic;
     using System.Linq;
-
+    using Ctransl = CSkyL.Translation.Translations;
     public class Human : Object<HumanID>
     {
         public override string Name => manager.GetCitizenName(id._index);
@@ -87,15 +87,16 @@ namespace CSkyL.Game.Object
             Utils.Infos details = new Utils.Infos();
 
             string occupation;
-            if (IsTourist) occupation = "(旅客)";
+            if (IsTourist) occupation = Ctransl.Translate("INFO_HUMAN_TOURIST");
             else {
                 occupation = Of(WorkBuildingID) is Building workBuilding ?
-                                 "在 " + workBuilding.Name + (IsStudent ? " 上学" : " 工作") : "(失业)";
+                (IsStudent ? Ctransl.Translate("INFO_HUMAN_STUDENTAT") : Ctransl.Translate("INFO_HUMAN_WORKAT") ) 
+                + workBuilding.Name :Ctransl.Translate("INFO_HUMAN_UNENPLOYED");
 
-                details["住址"] = Of(HomeBuildingID) is Building homeBuilding ?
-                                      homeBuilding.Name : "(无家可归)";
+                details[Ctransl.Translate("INFO_HUMAN_HOME")] = Of(HomeBuildingID) is Building homeBuilding ?
+                                      homeBuilding.Name : Ctransl.Translate("INFO_HUMAN_HOMELESS");
             }   
-            details["职业"] = occupation;
+            details[Ctransl.Translate("INFO_HUMAN_OCCUPATION")] = occupation;
 
             return details;
         }

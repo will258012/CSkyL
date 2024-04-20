@@ -4,7 +4,7 @@ namespace CSkyL.Game.Object
     using CSkyL.Transform;
     using System.Collections.Generic;
     using System.Linq;
-
+    using Ctransl = CSkyL.Translation.Translations;
     public abstract class Vehicle : Object<VehicleID>, IObjectToFollow
     {
         public override string Name => manager.GetVehicleName(GetHeadVehicleID()._index);
@@ -58,9 +58,9 @@ namespace CSkyL.Game.Object
             var vehicle = _Of(GetHeadVehicleID());
             switch (vehicle.GetOwnerID()) {
             case BuildingID buildingID:
-                details["拥有者"] = Building.GetName(buildingID); break;
+                details[Ctransl.Translate("INFO_VEHICLE_OWNER")] = Building.GetName(buildingID); break;
             case HumanID humanID:
-                details["拥有者"] = Of(humanID).Name; break;
+                details[Ctransl.Translate("INFO_VEHICLE_OWNER")] = Of(humanID).Name; break;
             }
 
             vehicle._MoreDetails(ref details);
@@ -105,17 +105,17 @@ namespace CSkyL.Game.Object
         {
             var ai = _GetVehicle(GetHeadVehicleIDof(id)).Info.m_vehicleAI;
             switch (ai) {
-            case BusAI busAi_________________: return new TransitVehicle(id, "巴士");
-            case TramAI tramAi_______________: return new TransitVehicle(id, "电车");
-            case MetroTrainAI metroTrainAi___: return new TransitVehicle(id, "地铁");
-            case PassengerTrainAI pTrainAi___: return new TransitVehicle(id, "火车");
-            case PassengerPlaneAI pPlaneAi___: return new TransitVehicle(id, "飞机");
-            case PassengerBlimpAI pBlimpAi___: return new TransitVehicle(id, "飞艇");
-            case CableCarAI cableCarAi_______: return new TransitVehicle(id, "热气球");
-            case TrolleybusAI trolleybusAi___: return new TransitVehicle(id, "无轨电车");
-            case PassengerFerryAI pFerryAi___: return new TransitVehicle(id, "渡轮");
-            case PassengerShipAI pShipAi_____: return new TransitVehicle(id, "船舶");
-            case PassengerHelicopterAI phAi__: return new TransitVehicle(id, "直升机");
+            case BusAI busAi_________________: return new TransitVehicle(id, Ctransl.Translate("VEHICLE_AITYPE_BUS"));
+            case TramAI tramAi_______________: return new TransitVehicle(id, Ctransl.Translate("VEHICLE_AITYPE_TRAM"));
+            case MetroTrainAI metroTrainAi___: return new TransitVehicle(id, Ctransl.Translate("VEHICLE_AITYPE_METRO"));
+            case PassengerTrainAI pTrainAi___: return new TransitVehicle(id, Ctransl.Translate("VEHICLE_AITYPE_TRAIN"));
+            case PassengerPlaneAI pPlaneAi___: return new TransitVehicle(id, Ctransl.Translate("VEHICLE_AITYPE_FLIGHT"));
+            case PassengerBlimpAI pBlimpAi___: return new TransitVehicle(id, Ctransl.Translate("VEHICLE_AITYPE_BLIMP"));
+            case CableCarAI cableCarAi_______: return new TransitVehicle(id, Ctransl.Translate("VEHICLE_AITYPE_GONDOLA"));
+            case TrolleybusAI trolleybusAi___: return new TransitVehicle(id, Ctransl.Translate("VEHICLE_AITYPE_TROLLEYBUS"));
+            case PassengerFerryAI pFerryAi___: return new TransitVehicle(id, Ctransl.Translate("VEHICLE_AITYPE_FERRY"));
+            case PassengerShipAI pShipAi_____: return new TransitVehicle(id, Ctransl.Translate("VEHICLE_AITYPE_SHIP"));
+            case PassengerHelicopterAI phAi__: return new TransitVehicle(id, Ctransl.Translate("VEHICLE_AITYPE_HELICOPTER"));
 
             case CargoTruckAI cargoTruckAi:
             case CargoTrainAI cargoTrainAi:
@@ -123,20 +123,20 @@ namespace CSkyL.Game.Object
             case CargoPlaneAI cargoPlaneAi___: return new CargoVehicle(id);
 
             case AmbulanceAI ambulanceAi:
-            case AmbulanceCopterAI aCopterAi_: return new ServiceVehicle(id, "医疗保健");
+            case AmbulanceCopterAI aCopterAi_: return new ServiceVehicle(id, Ctransl.Translate("VEHICLE_AITYPE_MEDICAL"));
             case DisasterResponseVehicleAI dr:
-            case DisasterResponseCopterAI drc: return new ServiceVehicle(id, "灾难救援");
+            case DisasterResponseCopterAI drc: return new ServiceVehicle(id, Ctransl.Translate("VEHICLE_AITYPE_DISASTERRESPONSE"));
             case FireCopterAI fireCopterAi:
-            case FireTruckAI fireTruckAi_____: return new ServiceVehicle(id, "消防");
+            case FireTruckAI fireTruckAi_____: return new ServiceVehicle(id, Ctransl.Translate("VEHICLE_AITYPE_FIREFIGHTING"));
             case PoliceCopterAI pCopterAi:
-            case PoliceCarAI policeCarAi_____: return new ServiceVehicle(id, "警察");
-            case GarbageTruckAI gTruckAi_____: return new ServiceVehicle(id, "垃圾清运");
-            case HearseAI hearseAi___________: return new ServiceVehicle(id, "遗体处理");
+            case PoliceCarAI policeCarAi_____: return new ServiceVehicle(id, Ctransl.Translate("VEHICLE_AITYPE_POLICE"));
+            case GarbageTruckAI gTruckAi_____: return new ServiceVehicle(id, Ctransl.Translate("VEHICLE_AITYPE_GARBAGE"));
+            case HearseAI hearseAi___________: return new ServiceVehicle(id, Ctransl.Translate("VEHICLE_AITYPE_DEATHCARE"));
             case MaintenanceTruckAI mTruckAi_:
             case ParkMaintenanceVehicleAI pm_: return new Maintenance(id);
-            case PostVanAI postVanAi_________: return new ServiceVehicle(id, "邮政");
-            case SnowTruckAI snowTruckAi_____: return new ServiceVehicle(id, "除雪");
-            case WaterTruckAI waterTruckAi___: return new ServiceVehicle(id, "抽水");
+            case PostVanAI postVanAi_________: return new ServiceVehicle(id, Ctransl.Translate("VEHICLE_AITYPE_POSTAL"));
+            case SnowTruckAI snowTruckAi_____: return new ServiceVehicle(id, Ctransl.Translate("VEHICLE_AITYPE_SNOWPLOWING"));
+            case WaterTruckAI waterTruckAi___: return new ServiceVehicle(id, Ctransl.Translate("VEHICLE_AITYPE_WATERPUMPING"));
             case TaxiAI taxiAi_______________: return new Taxi(id);
 
             case PrivatePlaneAI pPlaneAi:
@@ -146,7 +146,7 @@ namespace CSkyL.Game.Object
             case BalloonAI balloonAi:
             case FishingBoatAI fishingBoatAi_: return new MissionVehicle(id);
             //Fix that the bank service vehicle in the Financial Districts DLC cannot enter FPScamera
-            case BankVanAI bankvanAi_________: return new ServiceVehicle(id, "银行");
+            case BankVanAI bankvanAi_________: return new ServiceVehicle(id, Ctransl.Translate("VEHICLE_AITYPE_BANK"));
             default:
                 Log.Warn($"Vehicle(ID:{id} of type [{ai.GetType().Name}] is not recognized.");
                 return null;

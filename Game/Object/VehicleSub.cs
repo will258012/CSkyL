@@ -1,7 +1,7 @@
 ﻿namespace CSkyL.Game.Object
 {
     using CSkyL.Game.ID;
-
+    using Ctransl = CSkyL.Translation.Translations;
     public class CargoVehicle : Vehicle
     {
         public CargoVehicle(VehicleID id) : base(id) { }
@@ -9,8 +9,8 @@
         public override void _MoreDetails(ref Utils.Infos details)
         {
             GetLoadAndCapacity(out int load, out int capacity);
-            details["负载量"] = capacity > 0 ? ((float)load / capacity).ToString("P1")
-                                         : "(无效)";
+            details[Ctransl.Translate("INFO_VEHICLE_LOAD")] = capacity > 0 ? ((float)load / capacity).ToString("P1")
+                                         : Ctransl.Translate("INVALID");
         }
     }
 
@@ -21,11 +21,11 @@
 
         public override void _MoreDetails(ref Utils.Infos details)
         {
-            details["线路"] = $"{_transitType}> " + (GetTransitLineID() is TransitID id ?
-                                                       TransitLine.GetName(id) : "(外部)");
+            details[Ctransl.Translate("INFO_VEHICLE_PUBLICTRANSIT_TRANSIT")] = $"{_transitType}> " + (GetTransitLineID() is TransitID id ?
+                                        TransitLine.GetName(id) : Ctransl.Translate("INFO_VEHICLE_PUBLICTRANSIT_IRREGULAR"));
 
             GetLoadAndCapacity(out int load, out int capacity);
-            details["乘客数"] = $"{load,4} /{capacity,4}";
+            details[Ctransl.Translate("INFO_VEHICLE_PUBLICTRANSIT_PASSENGER")] = $"{load,4} /{capacity,4}";
         }
 
         private readonly string _transitType;
@@ -37,42 +37,42 @@
 
         public override void _MoreDetails(ref Utils.Infos details)
         {
-            details["服务"] = _typeName;
+            details[Ctransl.Translate("INFO_VEHICLE_SERVICE")] = _typeName;
 
             GetLoadAndCapacity(out int load, out int capacity);
-            if (capacity > 0) details["负载量"] = ((float)load / capacity).ToString("P1");
+            if (capacity > 0) details[Ctransl.Translate("INFO_VEHICLE_LOAD")] = ((float)load / capacity).ToString("P1");
         }
         private readonly string _typeName;
     }
 //Fix the mechanism that replaces 'Load' with 'Work Shift' ('负载量' 替换为 '轮班') does not work
     public class Taxi : ServiceVehicle
     {
-        public Taxi(VehicleID id) : base(id, "出租车") { }
+        public Taxi(VehicleID id) : base(id, Ctransl.Translate("VEHICLE_AITYPE_TAXI")) { }
 
         public override void _MoreDetails(ref Utils.Infos details)
         {
             base._MoreDetails(ref details);
-            int index = details.FindIndex((_info) => _info.field == "负载量");
+            int index = details.FindIndex((_info) => _info.field == Ctransl.Translate("INFO_VEHICLE_LOAD"));
             if (index >= 0)
             {
 
-                details[index] = new Utils.Info("轮班", details[index].text);
+                details[index] = new Utils.Info(Ctransl.Translate("INFO_VEHICLE_WORKSHIFT"), details[index].text);
             }
         }
     }
     //Add the same mechanism to replace 'Load' with 'Work shift' for Maintenance cars
     public class Maintenance : ServiceVehicle
     {
-        public Maintenance(VehicleID id) : base(id, "养护") { }
+        public Maintenance(VehicleID id) : base(id, Ctransl.Translate("VEHICLE_AITYPE_MAINTENANCE")) { }
 
         public override void _MoreDetails(ref Utils.Infos details)
         {
             base._MoreDetails(ref details);
-            int index = details.FindIndex((_info) => _info.field == "负载量");
+            int index = details.FindIndex((_info) => _info.field == Ctransl.Translate("INFO_VEHICLE_LOAD"));
             if (index >= 0)
             {
 
-                details[index] = new Utils.Info("轮班", details[index].text);
+                details[index] = new Utils.Info(Ctransl.Translate("INFO_VEHICLE_WORKSHIFT"), details[index].text);
             }
         }
     }
