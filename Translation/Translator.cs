@@ -502,6 +502,10 @@ namespace CSkyL.Translation
 
                             // Convert value to string and reset builder.
                             string value = builder.ToString();
+
+                            // Handling line breaks.
+                            value = value.Replace("\\n", "\n");
+                            
                             builder.Length = 0;
 
                             // Check if this entry is the language entry.
