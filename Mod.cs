@@ -20,8 +20,6 @@ namespace CSkyL
             Log.Logger = new FileLog(ShortName);
             Log.Msg($"Mod: {ShortName} enabled - v" + assembly.GetName().Version);
 
-            LoadConfig();
-
             try { Harmony.Patcher.PatchOnReady(assembly); }
             catch (System.IO.FileNotFoundException e) {
                 Log.Err("Assembly of Harmony is missing: " + e.Message);
@@ -68,6 +66,7 @@ namespace CSkyL
 
         public void OnSettingsUI(UIHelperBase helper)
         {
+            LoadConfig();
             var comp = (helper as UIHelper)?.self as ColossalFramework.UI.UIComponent;
             var menu = comp.gameObject.AddComponent<OptionsType>();
             menu.name = ShortName;
