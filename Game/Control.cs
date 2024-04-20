@@ -17,21 +17,80 @@ namespace CSkyL.Game
 
         public enum MouseButton : int { Primary = 0, Secondary = 1, Middle = 2 }
 
-        public static void ShowUI(bool show = true)
-        {
-            ColossalFramework.UI.UIView.Show(show);
-            NotificationManager.instance.NotificationsVisible = show;
-            GameAreaManager.instance.BordersVisible = show;
-            DistrictManager.instance.NamesVisible = show;
-            PropManager.instance.MarkersVisible = show;
-            GuideManager.instance.TutorialDisabled = show;
-            DisasterManager.instance.MarkersVisible = show;
-            NetManager.instance.RoadNamesVisible = show;
-        }
-        public static void HideUI() => ShowUI(false);
-
         public static void ShowCursor(bool visibility = true)
             => Cursor.visible = visibility;
         public static void HideCursor() => ShowCursor(false);
+
+        public static class UIManager
+        {
+            private class UIState
+            {
+                internal bool NotificationsVisible { get; set; }
+                internal bool BordersVisible { get; set; }
+                internal bool NamesVisible { get; set; }
+                internal bool MarkersVisible { get; set; }
+                internal bool TutorialDisabled { get; set; }
+                internal bool DisasterMarkersVisible { get; set; }
+                internal bool RoadNamesVisible { get; set; }
+            }
+
+            private static UIState savedState;
+
+            public static void ShowUI(bool IsShow = true)
+            {
+                if (!ModSupport.IsToggleItFoundandEnbled) {
+                    SetUIVisibility(IsShow);
+                }
+                else {
+                    if (IsShow) {
+                        RestoreState();
+                        ColossalFramework.UI.UIView.Show(true);
+                    }
+                    else {
+                        SaveState();
+                        SetUIVisibility(false);
+                    }
+                }
+            }
+
+            private static void SaveState()
+            {
+                savedState = new UIState
+                {
+                    NotificationsVisible = NotificationManager.instance.NotificationsVisible,
+                    BordersVisible = GameAreaManager.instance.BordersVisible,
+                    NamesVisible = DistrictManager.instance.NamesVisible,
+                    MarkersVisible = PropManager.instance.MarkersVisible,
+                    TutorialDisabled = GuideManager.instance.TutorialDisabled,
+                    DisasterMarkersVisible = DisasterManager.instance.MarkersVisible,
+                    RoadNamesVisible = NetManager.instance.RoadNamesVisible
+                };
+            }
+
+            private static void RestoreState()
+            {
+                if (savedState != null) {
+                    NotificationManager.instance.NotificationsVisible = savedState.NotificationsVisible;
+                    GameAreaManager.instance.BordersVisible = savedState.BordersVisible;
+                    DistrictManager.instance.NamesVisible = savedState.NamesVisible;
+                    PropManager.instance.MarkersVisible = savedState.MarkersVisible;
+                    GuideManager.instance.TutorialDisabled = savedState.TutorialDisabled;
+                    DisasterManager.instance.MarkersVisible = savedState.DisasterMarkersVisible;
+                    NetManager.instance.RoadNamesVisible = savedState.RoadNamesVisible;
+                }
+            }
+
+            private static void SetUIVisibility(bool isVisible)
+            {
+                ColossalFramework.UI.UIView.Show(isVisible);
+                NotificationManager.instance.NotificationsVisible = isVisible;
+                GameAreaManager.instance.BordersVisible = isVisible;
+                DistrictManager.instance.NamesVisible = isVisible;
+                PropManager.instance.MarkersVisible = isVisible;
+                GuideManager.instance.TutorialDisabled = isVisible;
+                DisasterManager.instance.MarkersVisible = isVisible;
+                NetManager.instance.RoadNamesVisible = isVisible;
+            }
+        }
     }
 }
