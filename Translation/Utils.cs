@@ -47,20 +47,24 @@ namespace CSkyL.Translation
         /// </returns>
         internal static int ConfigLanguageIndex {
             get {
-                string filePath = "FPSCameraConfig.xml";
+                try {
+                    string filePath = "FPSCameraConfig.xml";
 
-                XmlDocument doc = new XmlDocument();
-                doc.Load(filePath);
+                    XmlDocument doc = new XmlDocument();
+                    doc.Load(filePath);
 
-                XmlNode languageNode = doc.SelectSingleNode("/Config/Language");
+                    XmlNode languageNode = doc.SelectSingleNode("/Config/Language");
 
-                if (languageNode != null) {
-                    return int.Parse(languageNode.InnerText);
+                    if (languageNode != null) {
+                        return int.Parse(languageNode.InnerText);
+                    }
+                    else {
+                        return 0;
+                    }
                 }
-                else {
+                catch {
                     return 0;
                 }
-
             }
         }
     }
