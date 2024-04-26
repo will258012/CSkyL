@@ -43,7 +43,7 @@ namespace CSkyL.Translation
         /// </summary>
         /// <returns>
         /// Returns the language index from the configuration file. 
-        /// Returns 0 if the "Language" node is not found.
+        /// Returns 0 if the "Language" node or the configuration file is not found.
         /// </returns>
         internal static int ConfigLanguageIndex {
             get {
@@ -59,11 +59,11 @@ namespace CSkyL.Translation
                         return int.Parse(languageNode.InnerText);
                     }
                     else {
-                        return 0;
+                        return default;
                     }
                 }
                 catch {
-                    return 0;
+                    return default;
                 }
             }
         }
