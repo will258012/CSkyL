@@ -89,9 +89,12 @@ namespace CSkyL.Game.Object
             string occupation;
             if (IsTourist) occupation = Ctransl.Translate("INFO_HUMAN_TOURIST");
             else {
-                occupation = Of(WorkBuildingID) is Building workBuilding ?
-                (IsStudent ? Ctransl.Translate("INFO_HUMAN_STUDENTAT") : Ctransl.Translate("INFO_HUMAN_WORKAT") ) 
-                + workBuilding.Name :Ctransl.Translate("INFO_HUMAN_UNENPLOYED");
+                if (Of(WorkBuildingID) is Building workBuilding) {
+                    occupation = string.Format(IsStudent ? Ctransl.Translate("INFO_HUMAN_STUDENTAT") : Ctransl.Translate("INFO_HUMAN_WORKAT"), workBuilding.Name);
+                }
+                else {
+                    occupation = Ctransl.Translate("INFO_HUMAN_UNENPLOYED");
+                }
 
                 details[Ctransl.Translate("INFO_HUMAN_HOME")] = Of(HomeBuildingID) is Building homeBuilding ?
                                       homeBuilding.Name : Ctransl.Translate("INFO_HUMAN_HOMELESS");
