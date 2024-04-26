@@ -52,6 +52,7 @@
     <Reference Include="UnityEngine" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ModSupport.cs" />
     <Compile Include="Translation\Language.cs" />
     <Compile Include="Translation\Translations.cs" />
     <Compile Include="Translation\Translator.cs" />
