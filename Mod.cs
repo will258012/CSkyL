@@ -24,7 +24,7 @@ namespace CSkyL
             catch (System.IO.FileNotFoundException e) {
                 Log.Err("Assembly of Harmony is missing: " + e.Message);
             }
-            ModSupport.FindToggleIt();
+            ModSupport.ToggleIt.FindToggleIt();
             _PostEnable();
         }
         protected abstract void _PostEnable();
@@ -66,7 +66,10 @@ namespace CSkyL
 
         public void OnSettingsUI(UIHelperBase helper)
         {
-            LoadConfig();
+            if (!IsConfigLoadedOnGameStart) {
+                IsConfigLoadedOnGameStart = true;
+                LoadConfig();
+            }
             var comp = (helper as UIHelper)?.self as ColossalFramework.UI.UIComponent;
             var menu = comp.gameObject.AddComponent<OptionsType>();
             menu.name = ShortName;
@@ -78,5 +81,6 @@ namespace CSkyL
         public abstract void ResetConfig();
 
         protected abstract Assembly _Assembly { get; }
+        protected bool IsConfigLoadedOnGameStart = false;
     }
 }
