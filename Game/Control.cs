@@ -38,7 +38,7 @@ namespace CSkyL.Game
 
             public static void ShowUI(bool IsShow = true)
             {
-                if (!ModSupport.IsToggleItFoundandEnbled) {
+                if (!ModSupport.ToggleIt.IsToggleItFoundandEnbled) {
                     SetUIVisibility(IsShow);
                 }
                 else {
