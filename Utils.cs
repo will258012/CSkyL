@@ -1,7 +1,6 @@
 namespace CSkyL
 {
     using ColossalFramework.Math;
-    using ColossalFramework.Plugins;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -278,22 +277,6 @@ namespace CSkyL
                 if (t >= 1f)
                     return 1;
             }
-        }
-    }
-    public class ModSupport
-    {
-        public static bool IsToggleItFoundandEnbled { get; private set; }
-        public static void FindToggleIt()
-        {
-            var infos = PluginManager.instance.GetPluginsInfo();
-
-            foreach (var info in infos) {
-                if ((info.publishedFileID.AsUInt64 == 1764637396 || info.publishedFileID.AsUInt64 == 2573796841) && info.isEnabled) {
-                    Log.Msg("[ToggleItSupport] \"Toggle It!\" (or its CHS version) was found!");
-                    IsToggleItFoundandEnbled = true;
-                }
-            }
-            IsToggleItFoundandEnbled = false;
         }
     }
 }
