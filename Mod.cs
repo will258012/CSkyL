@@ -24,7 +24,7 @@ namespace CSkyL
             catch (System.IO.FileNotFoundException e) {
                 Log.Err("Assembly of Harmony is missing: " + e.Message);
             }
-            ModSupport.ToggleIt.FindToggleIt();
+            ModSupport.Initialize();
             _PostEnable();
         }
         protected abstract void _PostEnable();
@@ -36,7 +36,7 @@ namespace CSkyL
             catch (System.IO.FileNotFoundException e) {
                 Log.Err("Assembly of Harmony is missing: " + e.Message);
             }
-
+            
             Log.Msg("Mod disabled.");
         }
         protected abstract void _PreDisable();
