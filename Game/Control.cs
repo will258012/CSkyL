@@ -38,10 +38,7 @@ namespace CSkyL.Game
 
             public static void ShowUI(bool IsShow = true)
             {
-                if (!ModSupport.ToggleIt.IsToggleItFoundandEnbled) {
-                    SetUIVisibility(IsShow);
-                }
-                else {
+                if (ModSupport.IsToggleItFoundandEnbled) {
                     if (IsShow) {
                         RestoreState();
                         ColossalFramework.UI.UIView.Show(true);
@@ -50,6 +47,9 @@ namespace CSkyL.Game
                         SaveState();
                         SetUIVisibility(false);
                     }
+                }
+                else {
+                    SetUIVisibility(IsShow);
                 }
             }
 
