@@ -37,17 +37,18 @@ namespace CSkyL
             internal static void CheckTrainDisplay()
             {
                 try {
-                    //if (PluginManager.instance.isActiveAndEnabled) {
-                     //   foreach (var info in infos) {
-                    //        if (info.publishedFileID.AsUInt64 == && info.isEnabled) {
+                    if (PluginManager.instance.isActiveAndEnabled) {
+                        foreach (var info in infos) {
+                            if (info.publishedFileID.AsUInt64 == 3233229958 && info.isEnabled) {
                                 Log.Msg("[TrainDisplayUpdateSupport] \"Train Display - Update\" was found!");
                                 IsTrainDisplayFoundandEnbled = true;
                                 FollowVehicleID = default;
                                 return;
-                      //      }
-                      //  }
-                      //  IsTrainDisplayFoundandEnbled = false;
+                            }
+                        }
+                        IsTrainDisplayFoundandEnbled = false;
                     }
+                }
                 catch (System.Exception e) {
                     Log.Err($"[TrainDisplayUpdateSupport] Something went wrong when finding the mod: {e}");
                     IsTrainDisplayFoundandEnbled = false;
