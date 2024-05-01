@@ -81,6 +81,6 @@ namespace CSkyL
         public abstract void ResetConfig();
 
         protected abstract Assembly _Assembly { get; }
-        protected bool IsConfigLoadedOnGameStart = false;
+        private bool IsConfigLoadedOnGameStart = false;
     }
 }
