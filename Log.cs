@@ -48,15 +48,26 @@ namespace CSkyL
         {
             _logPath = $"{name}.log";
             _lastLogPath = $"{name}.old.log";
-
+            
             if (File.Exists(_logPath)) File.Copy(_logPath, _lastLogPath, true);
             using (var f = File.Create(_logPath)) { }
         }
-
-        public void Msg(string msg) { output("[info] " + msg); }
-        public void Warn(string msg) { output("[warn] " + msg); }
-        public void Err(string msg) { output(" [err] " + msg); }
-
+        public void Msg(string msg)
+        {
+            output($"[{GetTimestamp()}] [Info] {msg}");
+            unitylog.Msg(msg);
+        }
+        public void Warn(string msg)
+        {
+            output($"[{GetTimestamp()}] [Warning] {msg}");
+            unitylog.Warn(msg);
+        }
+        public void Err(string msg)
+        {
+            output($"[{GetTimestamp()}] [Error] {msg}");
+            unitylog.Err(msg);
+        }
+        private string GetTimestamp() => System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
         private void output(string str)
         {
             using (var writer = File.AppendText(_logPath)) {
@@ -66,6 +77,7 @@ namespace CSkyL
 
         private string _logPath;
         private string _lastLogPath;
+        private readonly ILog unitylog = new UnityLog();
     }
 
     public class UnityLog : ILog
@@ -73,11 +85,11 @@ namespace CSkyL
         private static readonly string logTag
                 = $"[{Assembly.GetExecutingAssembly().GetName().Name}] ";
 
-        public void Msg(string msg) { UnityEngine.Debug.Log(logTag + msg); }
-        public void Warn(string msg) { UnityEngine.Debug.LogWarning(logTag + msg); }
-        public void Err(string msg) { UnityEngine.Debug.LogError(logTag + msg); }
+        public void Msg(string msg) { UnityEngine.Debug.Log($"{logTag} {msg}"); }
+        public void Warn(string msg) { UnityEngine.Debug.LogWarning($"{logTag} {msg}"); }
+        public void Err(string msg) { UnityEngine.Debug.LogError($"{logTag} {msg}"); }
     }
-
+   
     public class DialogLog : ILog
     {
         private static readonly string msgTag
@@ -90,4 +102,5 @@ namespace CSkyL
         private static ExceptionPanel Panel
             => UIView.library.ShowModal<ExceptionPanel>("ExceptionPanel");
     }
+   
 }
