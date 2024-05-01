@@ -1,7 +1,7 @@
 namespace CSkyL.Game
 {
     using UnityEngine;
-
+    using ToggleItManager = ToggleIt.Managers.ToggleManager;
     public static class Control
     {
         public static float MouseMoveHori => Input.GetAxis("Mouse X");  // +/-: right/left
@@ -16,10 +16,7 @@ namespace CSkyL.Game
         public static bool KeyPressed(KeyCode key) => Input.GetKey(key);
 
         public enum MouseButton : int { Primary = 0, Secondary = 1, Middle = 2 }
-
-        public static void ShowCursor(bool visibility = true)
-            => Cursor.visible = visibility;
-        public static void HideCursor() => ShowCursor(false);
+        public static void ToggleCursor(bool visibility) => Cursor.visible = visibility;
 
         public static class UIManager
         {
@@ -27,70 +24,88 @@ namespace CSkyL.Game
             {
                 internal bool NotificationsVisible { get; set; }
                 internal bool BordersVisible { get; set; }
-                internal bool NamesVisible { get; set; }
-                internal bool MarkersVisible { get; set; }
-                internal bool TutorialDisabled { get; set; }
-                internal bool DisasterMarkersVisible { get; set; }
+                internal bool DirectNamesVisible { get; set; }
                 internal bool RoadNamesVisible { get; set; }
             }
 
             private static UIState savedState;
 
-            public static void ShowUI(bool IsShow = true)
+            public static void ToggleUI(bool visibility)
             {
                 if (ModSupport.IsToggleItFoundandEnbled) {
-                    if (IsShow) {
-                        RestoreState();
-                        ColossalFramework.UI.UIView.Show(true);
+                    try {
+                        SetUIVisibilityByToggleIt(visibility);
                     }
-                    else {
-                        SaveState();
-                        SetUIVisibility(false);
+                    catch (System.Exception e) {
+                        Log.Err($"[ModSupport] Failed to toggle UI using \"Toggle It!\": {e}. Falling back to the vanilla way.");
+                        SetUIVisibilityDirectly(visibility);
                     }
                 }
                 else {
-                    SetUIVisibility(IsShow);
+                    SetUIVisibilityDirectly(visibility);
                 }
             }
+
 
             private static void SaveState()
             {
                 savedState = new UIState
                 {
-                    NotificationsVisible = NotificationManager.instance.NotificationsVisible,
-                    BordersVisible = GameAreaManager.instance.BordersVisible,
-                    NamesVisible = DistrictManager.instance.NamesVisible,
-                    MarkersVisible = PropManager.instance.MarkersVisible,
-                    TutorialDisabled = GuideManager.instance.TutorialDisabled,
-                    DisasterMarkersVisible = DisasterManager.instance.MarkersVisible,
-                    RoadNamesVisible = NetManager.instance.RoadNamesVisible
+                    NotificationsVisible = ToggleItManager.Instance.GetById(1).On,
+                    BordersVisible = ToggleItManager.Instance.GetById(4).On,
+                    RoadNamesVisible = ToggleItManager.Instance.GetById(2).On,
+                    DirectNamesVisible = ToggleItManager.Instance.GetById(10).On,
                 };
+                Log.Msg($"[ModSupport] Saved UI state from \"Toggle It!\":\n" +
+                         $"  NotificationsVisible = {savedState.NotificationsVisible}\n" +
+                         $"  BordersVisible = {savedState.BordersVisible}\n" +
+                         $"  RoadNamesVisible = {savedState.RoadNamesVisible}\n" +
+                         $"  DirectNamesVisible = {savedState.DirectNamesVisible}");
             }
 
             private static void RestoreState()
             {
                 if (savedState != null) {
-                    NotificationManager.instance.NotificationsVisible = savedState.NotificationsVisible;
-                    GameAreaManager.instance.BordersVisible = savedState.BordersVisible;
-                    DistrictManager.instance.NamesVisible = savedState.NamesVisible;
-                    PropManager.instance.MarkersVisible = savedState.MarkersVisible;
-                    GuideManager.instance.TutorialDisabled = savedState.TutorialDisabled;
-                    DisasterManager.instance.MarkersVisible = savedState.DisasterMarkersVisible;
-                    NetManager.instance.RoadNamesVisible = savedState.RoadNamesVisible;
+                    ToggleItManager.Instance.Apply(1, savedState.NotificationsVisible);
+                    ToggleItManager.Instance.Apply(2, savedState.RoadNamesVisible);
+                    ToggleItManager.Instance.Apply(4, savedState.BordersVisible);
+                    ToggleItManager.Instance.Apply(10, savedState.DirectNamesVisible);
+                    Log.Msg("[ModSupport] Restored saved UI state using \"Toggle It!\"");
                 }
             }
 
-            private static void SetUIVisibility(bool isVisible)
+            private static void SetUIVisibilityByToggleIt(bool visibility)
             {
-                ColossalFramework.UI.UIView.Show(isVisible);
-                NotificationManager.instance.NotificationsVisible = isVisible;
-                GameAreaManager.instance.BordersVisible = isVisible;
-                DistrictManager.instance.NamesVisible = isVisible;
-                PropManager.instance.MarkersVisible = isVisible;
-                GuideManager.instance.TutorialDisabled = isVisible;
-                DisasterManager.instance.MarkersVisible = isVisible;
-                NetManager.instance.RoadNamesVisible = isVisible;
+                ColossalFramework.UI.UIView.Show(visibility);
+                if (!visibility) {
+                    SaveState();
+                    ToggleItManager.Instance.Apply(1, false);
+                    ToggleItManager.Instance.Apply(2, false);
+                    ToggleItManager.Instance.Apply(4, false);
+                    ToggleItManager.Instance.Apply(10, false);
+                    Log.Msg("[ModSupport] Hid UI using \"Toggle It!\"");
+                }
+                else {
+                    RestoreState();
+                }
+                ColossalFramework.Singleton<PropManager>.instance.MarkersVisible = visibility;
+                ColossalFramework.Singleton<GuideManager>.instance.TutorialDisabled = !visibility;
+                ColossalFramework.Singleton<DisasterManager>.instance.MarkersVisible = visibility;
+            }
+
+            private static void SetUIVisibilityDirectly(bool visibility)
+            {
+                ColossalFramework.UI.UIView.Show(visibility);
+                ColossalFramework.Singleton<NotificationManager>.instance.NotificationsVisible = visibility;
+                ColossalFramework.Singleton<GameAreaManager>.instance.BordersVisible = visibility;
+                ColossalFramework.Singleton<DistrictManager>.instance.NamesVisible = visibility;
+                ColossalFramework.Singleton<PropManager>.instance.MarkersVisible = visibility;
+                ColossalFramework.Singleton<GuideManager>.instance.TutorialDisabled = !visibility;
+                ColossalFramework.Singleton<DisasterManager>.instance.MarkersVisible = visibility;
+                ColossalFramework.Singleton<NetManager>.instance.RoadNamesVisible = visibility;
             }
         }
     }
 }
+
+
