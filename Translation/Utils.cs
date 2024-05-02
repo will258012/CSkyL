@@ -28,12 +28,12 @@ namespace CSkyL.Translation
                     }
                     catch (Exception e) {
                         // Don't care; just don't let a single failure stop us iterating through the plugins.
-                        Log.Err("[Translator] " + e + "exception iterating through plugins");
+                        Log.Err("Translator: " + e + "exception iterating through plugins");
                     }
                 }
 
                 // If we got here, then we didn't find the assembly.
-                Log.Err("[Translator] assembly path not found");
+                Log.Err("Translator: assembly path not found");
                 return null;
             }
         }
