@@ -26,6 +26,7 @@ namespace CSkyL.Game
                 internal bool BordersVisible { get; set; }
                 internal bool DirectNamesVisible { get; set; }
                 internal bool RoadNamesVisible { get; set; }
+                internal bool ContoursVisible {  get; set; }
             }
 
             private static UIState savedState;
@@ -37,7 +38,7 @@ namespace CSkyL.Game
                         SetUIVisibilityByToggleIt(visibility);
                     }
                     catch (System.Exception e) {
-                        Log.Err($"[ModSupport] Failed to toggle UI using \"Toggle It!\": {e}. Falling back to the vanilla way.");
+                        Log.Err($"ModSupport: Failed to toggle UI using \"Toggle It!\": {e}. Falling back to the vanilla way.");
                         SetUIVisibilityDirectly(visibility);
                     }
                 }
@@ -52,15 +53,17 @@ namespace CSkyL.Game
                 savedState = new UIState
                 {
                     NotificationsVisible = ToggleItManager.Instance.GetById(1).On,
-                    BordersVisible = ToggleItManager.Instance.GetById(4).On,
                     RoadNamesVisible = ToggleItManager.Instance.GetById(2).On,
+                    BordersVisible = ToggleItManager.Instance.GetById(4).On,
+                    ContoursVisible = ToggleItManager.Instance.GetById(5).On,
                     DirectNamesVisible = ToggleItManager.Instance.GetById(10).On,
                 };
-                Log.Msg($"[ModSupport] Saved UI state from \"Toggle It!\":\n" +
-                         $"  NotificationsVisible = {savedState.NotificationsVisible}\n" +
-                         $"  BordersVisible = {savedState.BordersVisible}\n" +
-                         $"  RoadNamesVisible = {savedState.RoadNamesVisible}\n" +
-                         $"  DirectNamesVisible = {savedState.DirectNamesVisible}");
+                Log.Msg($"ModSupport: Saved UI state from \"Toggle It!\":\n" +
+                         $"  NotificationIcons = {savedState.NotificationsVisible}\n" +
+                         $"  BorderLines = {savedState.BordersVisible}\n" +
+                         $"  ContourLines = {savedState.ContoursVisible}\n" +
+                         $"  RoadNames = {savedState.RoadNamesVisible}\n" +
+                         $"  DistrictNames = {savedState.DirectNamesVisible}");
             }
 
             private static void RestoreState()
@@ -69,8 +72,9 @@ namespace CSkyL.Game
                     ToggleItManager.Instance.Apply(1, savedState.NotificationsVisible);
                     ToggleItManager.Instance.Apply(2, savedState.RoadNamesVisible);
                     ToggleItManager.Instance.Apply(4, savedState.BordersVisible);
+                    ToggleItManager.Instance.Apply(5, savedState.ContoursVisible);
                     ToggleItManager.Instance.Apply(10, savedState.DirectNamesVisible);
-                    Log.Msg("[ModSupport] Restored saved UI state using \"Toggle It!\"");
+                    Log.Msg("ModSupport: Restored saved UI state using \"Toggle It!\"");
                 }
             }
 
@@ -82,8 +86,9 @@ namespace CSkyL.Game
                     ToggleItManager.Instance.Apply(1, false);
                     ToggleItManager.Instance.Apply(2, false);
                     ToggleItManager.Instance.Apply(4, false);
+                    ToggleItManager.Instance.Apply(5, false);
                     ToggleItManager.Instance.Apply(10, false);
-                    Log.Msg("[ModSupport] Hid UI using \"Toggle It!\"");
+                    Log.Msg("ModSupport: Hid UI using \"Toggle It!\"");
                 }
                 else {
                     RestoreState();
