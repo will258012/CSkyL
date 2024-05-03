@@ -56,7 +56,14 @@ namespace CSkyL.Translation
                     XmlNode languageNode = doc.SelectSingleNode("/Config/Language");
 
                     if (languageNode != null) {
-                        return languageNode.InnerText.ToString();
+                        if (int.TryParse(languageNode.InnerText, out int result)) {
+                            languageNode.InnerText = "default";
+                            doc.Save(filePath);
+                            return "default";
+                        }
+                        else {
+                            return languageNode.InnerText;
+                        }
                     }
                     else {
                         return "default";
