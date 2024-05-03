@@ -3,7 +3,7 @@
     using ColossalFramework.UI;
     using Vec2 = UnityEngine.Vector2;
     using Vec3 = UnityEngine.Vector3;
-    using CTransl = Translation.Translations;
+    using Ctransl = Translation.Translations;
 
     /*  Usage Examples:
      * 
@@ -487,30 +487,18 @@
         [Game.RequireDestruction] public readonly UIPanel _panel;
         public readonly UIDropDown _dropdown;
     }
-
-    public class LangDropDown : Element
+    public class DropDownv2 : Element
     {
-        public int Choiced {
+        public int Choice {
             get {
-                try { 
-                    return _dropdown.selectedIndex;
-                }
-                catch { }
+                try { return _dropdown.selectedIndex; } catch { }
                 return default;
             }
-            set {
-                try {
-                    int index = System.Array.IndexOf(_dropdown.items, value);
-                    if (index >= 0)
-                        _dropdown.selectedIndex = value;
-
-                }
-                catch { }
-            }
+            set { try { _dropdown.selectedIndex = value; } catch { } }
         }
         public void SetTriggerAction(System.Action<int> action)
-            => _dropdown.eventSelectedIndexChanged += (_, value) => action(Choiced);
-        public LangDropDown() { }
+            => _dropdown.eventSelectedIndexChanged += (_, value) => action(Choice);
+        public DropDownv2() { }
 
         protected override Element _Create(Element parent, Properties props)
         {
@@ -545,17 +533,14 @@
             dropdown.textScale = .9f * Style.Current._scale;
             dropdown.textFieldPadding = new UnityEngine.RectOffset(11, 5, 7, 0);
             dropdown.itemPadding = new UnityEngine.RectOffset(10, 5, 8, 0);
-            dropdown.items = CTransl.LanguageList;
             panel.autoSize = false;
             panel.height = dropdown.height + localPadding * 2f;
-            return new LangDropDown(dropdown, panel);
+            return new DropDownv2(dropdown, panel);
         }
-
-
         internal protected override UIComponent _UIComp => _panel;
-        protected LangDropDown(LangDropDown dropdown)
+        protected DropDownv2(DropDownv2 dropdown)
             : this(dropdown._dropdown, dropdown._panel) { }
-        private LangDropDown(UIDropDown dropdown, UIPanel panel)
+        private DropDownv2(UIDropDown dropdown, UIPanel panel)
         { _dropdown = dropdown; _panel = panel; }
 
         [Game.RequireDestruction] public readonly UIPanel _panel;
@@ -645,7 +630,7 @@
                 if (input._action is object) input._action(input.Key);
             }
             else {
-                input._button.text = CTransl.Translate("PRESS_ANY_KEY");
+                input._button.text = Ctransl.Translate("PRESS_ANY_KEY");
                 input._button.Focus();
                 UIView.PushModal(input._button);
                 input._waitingInput = true;

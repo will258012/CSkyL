@@ -1,5 +1,5 @@
 ﻿using CSkyL.Config;
-using CTransl = CSkyL.Translation.Translations;
+using Ctransl = CSkyL.Translation.Translations;
 namespace CSkyL.UI
 {
     public interface ISetting
@@ -97,7 +97,7 @@ namespace CSkyL.UI
             {
                 x = padding, y = label.bottom + padding,
                 width = panel.width - padding, wideCondition = true,
-                text = CTransl.Translate("SETTINGS_KEYMOVEFORWARD"),
+                text = Ctransl.Translate("SETTINGS_KEYMOVEFORWARD"),
                 config = config.forward, configObj = configProps.configObj,
                 stepSize = .05f, valueFormat = "F2"
             };
@@ -105,12 +105,12 @@ namespace CSkyL.UI
             var forward = panel.Add<SliderSetting>(sliderProp);
 
             sliderProp.y += forward.height + padding;
-            sliderProp.text = CTransl.Translate("SETTINGS_KEYMOVEUP"); sliderProp.config = config.up;
+            sliderProp.text = Ctransl.Translate("SETTINGS_KEYMOVEUP"); sliderProp.config = config.up;
             sliderProp.SetUpFromConfig();
             var up = panel.Add<SliderSetting>(sliderProp);
 
             sliderProp.y += up.height + padding;
-            sliderProp.text = CTransl.Translate("SETTINGS_KEYMOVERIFHT"); sliderProp.config = config.right;
+            sliderProp.text = Ctransl.Translate("SETTINGS_KEYMOVERIFHT"); sliderProp.config = config.right;
             sliderProp.SetUpFromConfig();
             var right = panel.Add<SliderSetting>(sliderProp);
 
@@ -126,6 +126,7 @@ namespace CSkyL.UI
 
         private readonly SliderSetting _forward, _up, _right;
     }
+
 
     public class ChoiceSetting<EnumType> : DropDown<EnumType>, ISetting
                         where EnumType : struct, System.IConvertible, System.IComparable
@@ -150,7 +151,60 @@ namespace CSkyL.UI
 
         private readonly ConfigData<EnumType> _config;
     }
+    public class ChoiceSettingv2 : DropDownv2, ISetting
+    {
+        public ChoiceSettingv2()
+        {
+        }
+        public void UpdateUI() { if (!Choice.Equals(_config)) Choice = _config; }
+        protected override Element _Create(Element parent, Properties props)
+        {
+            var configProps = props as SettingProperties;
+            configProps.SetUpFromConfig();
+            var dropdown = base._Create(parent, configProps) as DropDownv2;
+            var config = configProps.config as ConfigData<int>;
+            dropdown.Choice = config;
+            dropdown.SetTriggerAction((value)
+                => { config.Assign(value); configProps.configObj.Save(); });
+            return new ChoiceSettingv2(dropdown, config);
+        }
 
+        private ChoiceSettingv2(DropDownv2 dropdown, ConfigData<int> config)
+            : base(dropdown) { _config = config; }
+
+        private readonly ConfigData<int> _config;
+    }
+    public class LangChoiceSetting : DropDownv2, ISetting
+    {
+        public LangChoiceSetting()
+        {
+        }
+        public void UpdateUI()
+        {
+            if (Ctransl.CurrentLanguage != _config) Ctransl.CurrentLanguage = _config;
+            if (!Choice.Equals(Ctransl.Index)) Choice = Ctransl.Index;
+        }
+        protected override Element _Create(Element parent, Properties props)
+        {
+            var configProps = props as SettingProperties;
+            configProps.SetUpFromConfig();
+            var dropdown = base._Create(parent, configProps) as DropDownv2;
+            var config = configProps.config as ConfigData<string>;
+            dropdown.Choice = Ctransl.Index;
+            dropdown.SetTriggerAction((value)
+                => {
+                    Ctransl.Index = value;
+                    var langcode = Ctransl.CurrentLanguage;
+                    config.Assign(langcode); configProps.configObj.Save();
+                });
+            return new LangChoiceSetting(dropdown, config);
+        }
+
+        private LangChoiceSetting(DropDownv2 dropdown, ConfigData<string> config)
+            : base(dropdown) { _config = config; }
+
+        private readonly ConfigData<string> _config;
+    }
     public class KeyMapSetting : KeyInput, ISetting
     {
         public KeyMapSetting() { }
@@ -175,33 +229,5 @@ namespace CSkyL.UI
         { _config = config; }
 
         private readonly ConfigData<UnityEngine.KeyCode> _config;
-    }
-
-    public class LangSetting : LangDropDown, ISetting
-    {
-        public LangSetting() { }
-        public void UpdateUI() { 
-            if (!Choiced.Equals(_config)) 
-                Choiced = _config;
-            if(_dropdown.selectedIndex != _config)
-               _dropdown.selectedIndex = _config;
-        }
-
-        protected override Element _Create(Element parent, Properties props)
-        {
-            var configProps = props as SettingProperties;
-            configProps.SetUpFromConfig();
-            var dropdown = base._Create(parent, configProps) as LangDropDown;
-            var config = configProps.config as ConfigData<int>;
-            dropdown.Choiced = config;
-            dropdown.SetTriggerAction((value)
-                => { config.Assign(value); configProps.configObj.Save(); });
-            return new LangSetting(dropdown, config);
-        }
-
-        private LangSetting(LangDropDown dropdown, ConfigData<int> config)
-            : base(dropdown) { _config = config; }
-
-        private readonly ConfigData<int> _config;
     }
 }

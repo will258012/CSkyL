@@ -37,33 +37,34 @@ namespace CSkyL.Translation
                 return null;
             }
         }
+
         /// <summary>
         /// Read the "Language" key value pairs in the mod configuration file.
         /// In this way, when using `Translates.Translate` method for the first time, the language can be loaded correctly.
         /// </summary>
         /// <returns>
-        /// Returns the language index from the configuration file. 
+        /// Returns the language code from the configuration file. 
         /// Returns 0 if the "Language" node or the configuration file is not found.
         /// </returns>
-        internal static int ConfigLanguageIndex {
+        internal static string ConfigLanguageCode {
             get {
                 try {
                     string filePath = "FPSCameraConfig.xml";
-
                     XmlDocument doc = new XmlDocument();
                     doc.Load(filePath);
 
                     XmlNode languageNode = doc.SelectSingleNode("/Config/Language");
 
                     if (languageNode != null) {
-                        return int.Parse(languageNode.InnerText);
+                        return languageNode.InnerText.ToString();
                     }
                     else {
-                        return default;
+                        return "default";
                     }
                 }
-                catch {
-                    return default;
+                catch (Exception e) {
+                    Log.Err($"Translator: Failed get language from config file:{e},falling back to \"default\"");
+                    return "default";
                 }
             }
         }
