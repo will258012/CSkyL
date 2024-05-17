@@ -1,5 +1,6 @@
 namespace CSkyL.Game
 {
+    using System.Collections;
     using UnityEngine;
     using ToggleItManager = ToggleIt.Managers.ToggleManager;
     public static class Control
@@ -26,14 +27,14 @@ namespace CSkyL.Game
                 internal bool BordersVisible { get; set; }
                 internal bool DirectNamesVisible { get; set; }
                 internal bool RoadNamesVisible { get; set; }
-                internal bool ContoursVisible {  get; set; }
+                internal bool ContoursVisible { get; set; }
             }
 
             private static UIState savedState;
 
-            public static void ToggleUI(bool visibility)
+            public static IEnumerator ToggleUI(bool visibility)
             {
-                if (ModSupport.IsToggleItFoundandEnbled) {
+                if (ModSupport.IsToggleItFoundandEnabled) {
                     try {
                         SetUIVisibilityByToggleIt(visibility);
                     }
@@ -45,8 +46,9 @@ namespace CSkyL.Game
                 else {
                     SetUIVisibilityDirectly(visibility);
                 }
+                    
+                yield break;
             }
-
 
             private static void SaveState()
             {
@@ -112,5 +114,4 @@ namespace CSkyL.Game
         }
     }
 }
-
 
