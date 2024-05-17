@@ -6,12 +6,10 @@
     public static class Utils
     {
         public static bool InGameMode
-            => ToolManager.instance is ToolManager m ?
-                    m.m_properties.m_mode == ItemClass.Availability.Game : false;
+            => ToolManager.instance is ToolManager m && m.m_properties.m_mode == ItemClass.Availability.Game;
 
         public static bool InEditorMode
-            => ToolManager.instance is ToolManager m ?
-                    (m.m_properties.m_mode & ItemClass.Availability.Editors) != 0 : false;
+            => ToolManager.instance is ToolManager m && (m.m_properties.m_mode & ItemClass.Availability.Editors) != 0;
 
         public static float TimeSinceLastFrame => Time.deltaTime;
 
@@ -20,7 +18,7 @@
         {
             public string this[string field] { set => Add(new Info(field, value)); }
         }
-        public struct Info
+        public readonly struct Info
         {
             public readonly string field, text;
             public Info(string field, string text) { this.field = field; this.text = text; }

@@ -67,6 +67,6 @@
         public static bool HasPatched(System.Reflection.Assembly assembly)
             => _patchedAssemblies.Contains(assembly.GetName().Name);
 
-        private static List<string> _patchedAssemblies = new List<string>();
+        private static readonly List<string> _patchedAssemblies = new List<string>();
     }
 }

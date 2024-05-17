@@ -75,8 +75,8 @@ namespace CSkyL
             }
         }
 
-        private string _logPath;
-        private string _lastLogPath;
+        private readonly string _logPath;
+        private readonly string _lastLogPath;
         private readonly ILog unitylog = new UnityLog();
     }
 

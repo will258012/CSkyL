@@ -55,7 +55,6 @@
             int index = details.FindIndex((_info) => _info.field == Ctransl.Translate("INFO_VEHICLE_LOAD"));
             if (index >= 0)
             {
-
                 details[index] = new Utils.Info(Ctransl.Translate("INFO_VEHICLE_WORKSHIFT"), details[index].text);
             }
         }

@@ -13,7 +13,7 @@ namespace CSkyL.Translation
     public class Language
     {
         // Private fields.
-        private Dictionary<string, string> _translationDictionary = new Dictionary<string, string>();
+        private readonly Dictionary<string, string> _translationDictionary = new Dictionary<string, string>();
 
         /// <summary>
         /// Gets the translation key that identifies the file's readable language name.

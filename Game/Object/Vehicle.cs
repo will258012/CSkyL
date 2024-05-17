@@ -105,48 +105,75 @@ namespace CSkyL.Game.Object
         {
             var ai = _GetVehicle(GetHeadVehicleIDof(id)).Info.m_vehicleAI;
             switch (ai) {
-            case BusAI busAi_________________: return new TransitVehicle(id, Ctransl.Translate("VEHICLE_AITYPE_BUS"));
-            case TramAI tramAi_______________: return new TransitVehicle(id, Ctransl.Translate("VEHICLE_AITYPE_TRAM"));
-            case MetroTrainAI metroTrainAi___: return new TransitVehicle(id, Ctransl.Translate("VEHICLE_AITYPE_METRO"));
-            case PassengerTrainAI pTrainAi___: return new TransitVehicle(id, Ctransl.Translate("VEHICLE_AITYPE_TRAIN"));
-            case PassengerPlaneAI pPlaneAi___: return new TransitVehicle(id, Ctransl.Translate("VEHICLE_AITYPE_FLIGHT"));
-            case PassengerBlimpAI pBlimpAi___: return new TransitVehicle(id, Ctransl.Translate("VEHICLE_AITYPE_BLIMP"));
-            case CableCarAI cableCarAi_______: return new TransitVehicle(id, Ctransl.Translate("VEHICLE_AITYPE_GONDOLA"));
-            case TrolleybusAI trolleybusAi___: return new TransitVehicle(id, Ctransl.Translate("VEHICLE_AITYPE_TROLLEYBUS"));
-            case PassengerFerryAI pFerryAi___: return new TransitVehicle(id, Ctransl.Translate("VEHICLE_AITYPE_FERRY"));
-            case PassengerShipAI pShipAi_____: return new TransitVehicle(id, Ctransl.Translate("VEHICLE_AITYPE_SHIP"));
-            case PassengerHelicopterAI phAi__: return new TransitVehicle(id, Ctransl.Translate("VEHICLE_AITYPE_HELICOPTER"));
+            case BusAI _:
+                return new TransitVehicle(id, Ctransl.Translate("VEHICLE_AITYPE_BUS"));
+            case TramAI _:
+                return new TransitVehicle(id, Ctransl.Translate("VEHICLE_AITYPE_TRAM"));
+            case MetroTrainAI _:
+                return new TransitVehicle(id, Ctransl.Translate("VEHICLE_AITYPE_METRO"));
+            case PassengerTrainAI _:
+                return new TransitVehicle(id, Ctransl.Translate("VEHICLE_AITYPE_TRAIN"));
+            case PassengerPlaneAI _:
+                return new TransitVehicle(id, Ctransl.Translate("VEHICLE_AITYPE_FLIGHT"));
+            case PassengerBlimpAI _:
+                return new TransitVehicle(id, Ctransl.Translate("VEHICLE_AITYPE_BLIMP"));
+            case CableCarAI _:
+                return new TransitVehicle(id, Ctransl.Translate("VEHICLE_AITYPE_GONDOLA"));
+            case TrolleybusAI _:
+                return new TransitVehicle(id, Ctransl.Translate("VEHICLE_AITYPE_TROLLEYBUS"));
+            case PassengerFerryAI _:
+                return new TransitVehicle(id, Ctransl.Translate("VEHICLE_AITYPE_FERRY"));
+            case PassengerShipAI _:
+                return new TransitVehicle(id, Ctransl.Translate("VEHICLE_AITYPE_SHIP"));
+            case PassengerHelicopterAI _:
+                return new TransitVehicle(id, Ctransl.Translate("VEHICLE_AITYPE_HELICOPTER"));
 
-            case CargoTruckAI cargoTruckAi:
-            case CargoTrainAI cargoTrainAi:
-            case CargoShipAI cargoShipAi:
-            case CargoPlaneAI cargoPlaneAi___: return new CargoVehicle(id);
+            case CargoTruckAI _:
+            case CargoTrainAI _:
+            case CargoShipAI _:
+            case CargoPlaneAI _:
+                return new CargoVehicle(id);
 
-            case AmbulanceAI ambulanceAi:
-            case AmbulanceCopterAI aCopterAi_: return new ServiceVehicle(id, Ctransl.Translate("VEHICLE_AITYPE_MEDICAL"));
-            case DisasterResponseVehicleAI dr:
-            case DisasterResponseCopterAI drc: return new ServiceVehicle(id, Ctransl.Translate("VEHICLE_AITYPE_DISASTERRESPONSE"));
-            case FireCopterAI fireCopterAi:
-            case FireTruckAI fireTruckAi_____: return new ServiceVehicle(id, Ctransl.Translate("VEHICLE_AITYPE_FIREFIGHTING"));
-            case PoliceCopterAI pCopterAi:
-            case PoliceCarAI policeCarAi_____: return new ServiceVehicle(id, Ctransl.Translate("VEHICLE_AITYPE_POLICE"));
-            case GarbageTruckAI gTruckAi_____: return new ServiceVehicle(id, Ctransl.Translate("VEHICLE_AITYPE_GARBAGE"));
-            case HearseAI hearseAi___________: return new ServiceVehicle(id, Ctransl.Translate("VEHICLE_AITYPE_DEATHCARE"));
-            case MaintenanceTruckAI mTruckAi_:
-            case ParkMaintenanceVehicleAI pm_: return new Maintenance(id);
-            case PostVanAI postVanAi_________: return new ServiceVehicle(id, Ctransl.Translate("VEHICLE_AITYPE_POSTAL"));
-            case SnowTruckAI snowTruckAi_____: return new ServiceVehicle(id, Ctransl.Translate("VEHICLE_AITYPE_SNOWPLOWING"));
-            case WaterTruckAI waterTruckAi___: return new ServiceVehicle(id, Ctransl.Translate("VEHICLE_AITYPE_WATERPUMPING"));
-            case TaxiAI taxiAi_______________: return new Taxi(id);
+            case AmbulanceAI _:
+            case AmbulanceCopterAI _:
+                return new ServiceVehicle(id, Ctransl.Translate("VEHICLE_AITYPE_MEDICAL"));
+            case DisasterResponseVehicleAI _:
+            case DisasterResponseCopterAI _:
+                return new ServiceVehicle(id, Ctransl.Translate("VEHICLE_AITYPE_DISASTERRESPONSE"));
+            case FireCopterAI _:
+            case FireTruckAI _:
+                return new ServiceVehicle(id, Ctransl.Translate("VEHICLE_AITYPE_FIREFIGHTING"));
+            case PoliceCopterAI _:
+            case PoliceCarAI _:
+                return new ServiceVehicle(id, Ctransl.Translate("VEHICLE_AITYPE_POLICE"));
+            case GarbageTruckAI _:
+                return new ServiceVehicle(id, Ctransl.Translate("VEHICLE_AITYPE_GARBAGE"));
+            case HearseAI _:
+                return new ServiceVehicle(id, Ctransl.Translate("VEHICLE_AITYPE_DEATHCARE"));
+            case MaintenanceTruckAI _:
+            case ParkMaintenanceVehicleAI _:
+                return new Maintenance(id);
+            case PostVanAI _:
+                return new ServiceVehicle(id, Ctransl.Translate("VEHICLE_AITYPE_POSTAL"));
+            case SnowTruckAI _:
+                return new ServiceVehicle(id, Ctransl.Translate("VEHICLE_AITYPE_SNOWPLOWING"));
+            case WaterTruckAI _:
+                return new ServiceVehicle(id, Ctransl.Translate("VEHICLE_AITYPE_WATERPUMPING"));
+            case TaxiAI _:
+                return new Taxi(id);
 
-            case PrivatePlaneAI pPlaneAi:
-            case PassengerCarAI pCarAi_______: return new PersonalVehicle(id);
-            case BicycleAI bicycleAi_________: return new Bicycle(id);
+            case PrivatePlaneAI _:
+            case PassengerCarAI _:
+                return new PersonalVehicle(id);
+            case BicycleAI _:
+                return new Bicycle(id);
 
-            case BalloonAI balloonAi:
-            case FishingBoatAI fishingBoatAi_: return new MissionVehicle(id);
+            case BalloonAI _:
+            case FishingBoatAI _:
+                return new MissionVehicle(id);
             //Fix that the bank service vehicle in the Financial Districts DLC cannot enter FPScamera
-            case BankVanAI bankvanAi_________: return new ServiceVehicle(id, Ctransl.Translate("VEHICLE_AITYPE_BANK"));
+            case BankVanAI _:
+                return new ServiceVehicle(id, Ctransl.Translate("VEHICLE_AITYPE_BANK"));
             default:
                 Log.Warn($"Vehicle(ID:{id} of type [{ai.GetType().Name}] is not recognized.");
                 return null;
