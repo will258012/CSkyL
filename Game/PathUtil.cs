@@ -71,10 +71,10 @@ namespace CSkyL.Game
             if (pathPos1.GetNodeID() == 0) {
                 // use pathPos1 offset because we are transitioning from road to pavement.
                 pathPos2.CalculatePositionAndDirection(
-                pathPos1.m_offset, out var pos2, out var dir2);
+                pathPos1.m_offset, out var pos2, out _);
                 // straight line:
                 dir1 = (pos2 - pos1).normalized;
-                dir2 = -dir1;
+                Vector3 dir2 = -dir1;
                 return CSkyL.Math.Bezier3ByDir(pos1, dir1, pos2, dir2);
             }
             else {

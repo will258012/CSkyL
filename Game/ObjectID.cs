@@ -28,13 +28,12 @@ namespace CSkyL.Game.ID
 
     public abstract class BaseID<T> : ObjectID where T : struct, System.IComparable<T>
     {
-        public override string ToString() => $"{_index}/{base.ToString()}";
-
-        internal readonly T _index;
-        protected BaseID(T index, InstanceID implID) : base(implID) { _index = index; }
+        public override string ToString() => $"{Value}/{base.ToString()}";
+        public T Value { get; private set; }
+        protected BaseID(T index, InstanceID implID) : base(implID) { Value = index; }
 
         protected static Derived NullIfInvalid<Derived>(Derived id) where Derived : BaseID<T>
-            => id._index.CompareTo(default) == 0 ? null : id;
+            => id.Value.CompareTo(default) == 0 ? null : id;
     }
 
     public class HumanID : BaseID<uint>

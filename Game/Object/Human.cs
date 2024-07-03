@@ -7,7 +7,7 @@ namespace CSkyL.Game.Object
     using Ctransl = CSkyL.Translation.Translations;
     public class Human : Object<HumanID>
     {
-        public override string Name => manager.GetCitizenName(id._index);
+        public override string Name => manager.GetCitizenName(id.Value);
 
         public bool IsTourist => _Is(Citizen.Flags.Tourist);
         public bool IsStudent => _Is(Citizen.Flags.Student);
@@ -25,7 +25,7 @@ namespace CSkyL.Game.Object
         protected readonly Citizen _citizen;
 
         private static Citizen _GetCitizen(HumanID hid)
-            => manager.m_citizens.m_buffer[hid._index];
+            => manager.m_citizens.m_buffer[hid.Value];
         private static PedestrianID _GetPedestrianID(HumanID hid)
             => PedestrianID._FromIndex(_GetCitizen(hid).m_instance);
         private static readonly CitizenManager manager = CitizenManager.instance;
@@ -33,7 +33,7 @@ namespace CSkyL.Game.Object
 
     public class Pedestrian : Human, IObjectToFollow
     {
-        public override string Name => manager.GetCitizenName(id._index);
+        public override string Name => manager.GetCitizenName(id.Value);
 
         public bool IsWaitingTransit => _Is(CitizenInstance.Flags.WaitingTransport);
         public bool IsEnteringVehicle => _Is(CitizenInstance.Flags.EnteringVehicle);
@@ -72,7 +72,7 @@ namespace CSkyL.Game.Object
         {
             var _c = _citizen;
             var status = GetCitizenInstance().Info.m_citizenAI.GetLocalizedStatus(
-                                pedestrianID._index, ref _c, out var implID);
+                                pedestrianID.Value, ref _c, out var implID);
             switch (ObjectID._FromIID(implID)) {
             case BuildingID bid: status += Building.GetName(bid); break;
             case NodeID nid:
@@ -98,7 +98,7 @@ namespace CSkyL.Game.Object
 
                 details[Ctransl.Translate("INFO_HUMAN_HOME")] = Of(HomeBuildingID) is Building homeBuilding ?
                                       homeBuilding.Name : Ctransl.Translate("INFO_HUMAN_HOMELESS");
-            }   
+            }
             details[Ctransl.Translate("INFO_HUMAN_OCCUPATION")] = occupation;
 
             return details;
@@ -116,7 +116,7 @@ namespace CSkyL.Game.Object
             => ref _GetCitizenInstance(pedestrianID);
 
         private static ref CitizenInstance _GetCitizenInstance(PedestrianID pid)
-            => ref manager.m_instances.m_buffer[pid._index];
+            => ref manager.m_instances.m_buffer[pid.Value];
         private static HumanID _GetHumanID(PedestrianID pid)
             => HumanID._FromIndex(_GetCitizenInstance(pid).m_citizen);
 
@@ -131,7 +131,7 @@ namespace CSkyL.Game.Object
             => (GetCitizenInstance().m_flags & flags) != 0;
 
         public readonly PedestrianID pedestrianID;
-        private ushort _pid => pedestrianID._index;
+        private ushort _pid => pedestrianID.Value;
 
         private static readonly CitizenManager manager = CitizenManager.instance;
     }

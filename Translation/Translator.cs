@@ -5,13 +5,13 @@
 
 namespace CSkyL.Translation
 {
+    using ColossalFramework;
+    using ColossalFramework.Globalization;
     using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
     using System.Text;
-    using ColossalFramework;
-    using ColossalFramework.Globalization;
 
     /// <summary>
     /// Language changed event.
@@ -74,10 +74,8 @@ namespace CSkyL.Translation
         /// Gets an alphabetically-sorted (by code) array of language display names, with an additional "system settings" item as the first item.
         /// </summary>
         /// <returns>Readable language names in alphabetical order by unique name (language code) as string array.</returns>
-        public string[] LanguageList
-        {
-            get
-            {
+        public string[] LanguageList {
+            get {
                 // Get list of readable language names.
                 List<string> readableNames = _languages.Values.Select((language) => language.Name).ToList();
 
@@ -92,23 +90,18 @@ namespace CSkyL.Translation
         /// <summary>
         /// Gets the active language.
         /// </summary>
-        private Language ActiveLangague
-        {
-            get
-            {
+        private Language ActiveLangague {
+            get {
                 // Are we using the game language setting?
-                if (_currentIndex < 0) 
-                    {    
+                if (_currentIndex < 0) {
                     // Using game language - initialise system language if we haven't already, or if the system language has changed since last time.
-                    if (LocaleManager.exists & (LocaleManager.instance.language != _systemLangaugeCode | _systemLanguage == null))
-                    {
+                    if (LocaleManager.exists & (LocaleManager.instance.language != _systemLangaugeCode | _systemLanguage == null)) {
                         SetSystemLanguage();
                     }
 
                     return _systemLanguage;
                 }
-                else
-                {
+                else {
                     // Using a manuall-set language.
                     return _languages.Values[_currentIndex];
                 }
@@ -127,23 +120,19 @@ namespace CSkyL.Translation
         {
             // Check that a valid current language is set.
             Language activeLanguage = ActiveLangague;
-            if (activeLanguage != null)
-            {
+            if (activeLanguage != null) {
                 // Check that the current key is included in the translation.
-                if (activeLanguage.TranslationDictionary.ContainsKey(key))
-                {
+                if (activeLanguage.TranslationDictionary.ContainsKey(key)) {
                     // All good!  Return translation.
                     return activeLanguage.TranslationDictionary[key];
                 }
-                else
-                {
+                else {
                     // Lookup failed - fallack translation.
                     Log.Warn("Translator: no translation for language " + activeLanguage.Code + " found for key " + key);
                     return FallbackTranslation(activeLanguage.Code, key);
                 }
             }
-            else
-            {
+            else {
                 Log.Err("Translator: no current language when translating key " + key);
             }
 
@@ -159,8 +148,7 @@ namespace CSkyL.Translation
         public void SetLanguage(string languageCode)
         {
             // Null check.
-            if (languageCode.IsNullOrWhiteSpace())
-            {
+            if (languageCode.IsNullOrWhiteSpace()) {
                 Log.Err("Translator: empty language code passed tp Translator.SetLanguage");
                 return;
             }
@@ -168,25 +156,21 @@ namespace CSkyL.Translation
             Log.Msg("Translator: setting language to " + languageCode);
 
             // Default (game) language.
-            if (languageCode == "default")
-            {
+            if (languageCode == "default") {
                 SetLanguage(-1);
                 return;
             }
 
             // Try for direct match.
-            if (_languages.ContainsKey(languageCode))
-            {
+            if (_languages.ContainsKey(languageCode)) {
                 SetLanguage(_languages.IndexOfKey(languageCode));
                 return;
             }
 
             // No direct match found - attempt to find any other suitable translation file (code matches first two letters).
             string shortCode = languageCode.Substring(0, 2);
-            foreach (KeyValuePair<string, Language> entry in _languages)
-            {
-                if (entry.Key.StartsWith(shortCode))
-                {
+            foreach (KeyValuePair<string, Language> entry in _languages) {
+                if (entry.Key.StartsWith(shortCode)) {
                     // Found an alternative.
                     Log.Msg("Translator: using language " + entry.Key + " as replacement for unknown language code " + languageCode);
                     SetLanguage(_languages.IndexOfKey(entry.Key));
@@ -209,14 +193,12 @@ namespace CSkyL.Translation
             Log.Msg("Translator: setting language to index: " + index);
 
             // Don't do anything if no languages have been loaded.
-            if (_languages != null && _languages.Count > 0)
-            {
+            if (_languages != null && _languages.Count > 0) {
                 // Bounds check; if out of bounds, use -1 (system language) instead.
                 int newIndex = index >= _languages.Count ? -1 : index;
 
                 // Change the language if what we've done is new.
-                if (newIndex != _currentIndex)
-                {
+                if (newIndex != _currentIndex) {
                     _currentIndex = newIndex;
 
                     // Trigger language changed event.
@@ -231,17 +213,14 @@ namespace CSkyL.Translation
         private void SetSystemLanguage()
         {
             // Make sure Locale Manager is ready before calling it.
-            if (LocaleManager.exists)
-            {
+            if (LocaleManager.exists) {
                 // Try to set our system language from system settings.
-                try
-                {
+                try {
                     // Get new locale id.
                     string newLanguageCode = LocaleManager.instance.language;
 
                     // If we've already been set to this locale, do nothing.
-                    if (_systemLanguage != null & _systemLangaugeCode == newLanguageCode)
-                    {
+                    if (_systemLanguage != null & _systemLangaugeCode == newLanguageCode) {
                         return;
                     }
 
@@ -251,16 +230,14 @@ namespace CSkyL.Translation
                     _systemLanguage = FindLanguage(newLanguageCode);
 
                     // If we're using system language, invoke the language changed event.
-                    if (_currentIndex < 0)
-                    {
+                    if (_currentIndex < 0) {
                         OnLanguageChanged?.Invoke(_systemLangaugeCode);
                     }
 
                     // All done.
                     return;
                 }
-                catch (Exception e)
-                {
+                catch (Exception e) {
                     // Don't really care.
                     Log.Err("Translator: " + e + "exception setting system language");
                 }
@@ -281,16 +258,14 @@ namespace CSkyL.Translation
         private Language FindLanguage(string languageCode)
         {
             // First attempt to find the language code as-is.
-            if (_languages.TryGetValue(languageCode, out Language language))
-            {
+            if (_languages.TryGetValue(languageCode, out Language language)) {
                 return language;
             }
 
             // If that fails, take the first two characters of the provided code and match with the first language code we have starting with those two letters.
             // This will automatically prioritise any translations with only two letters (e.g. 'en' takes priority over 'en-US'),
             KeyValuePair<string, Language> firstMatch = _languages.FirstOrDefault(x => x.Key.StartsWith(languageCode.Substring(0, 2)));
-            if (!string.IsNullOrEmpty(firstMatch.Key))
-            {
+            if (!string.IsNullOrEmpty(firstMatch.Key)) {
                 // Found one - return translation.
                 Log.Msg("Translator: using translation file " + firstMatch.Key + " for language " + languageCode);
                 return firstMatch.Value;
@@ -309,14 +284,11 @@ namespace CSkyL.Translation
         /// <returns>Fallback translation if successful, or raw key if failed.  </returns>
         private string FallbackTranslation(string attemptedLanguage, string key)
         {
-            try
-            {
+            try {
                 // Attempt to find any other suitable translation file (code matches first two letters).
                 string shortCode = attemptedLanguage.Substring(0, 2);
-                foreach (KeyValuePair<string, Language> entry in _languages)
-                {
-                    if (entry.Key.StartsWith(shortCode) && entry.Value.TranslationDictionary.TryGetValue(key, out string result))
-                    {
+                foreach (KeyValuePair<string, Language> entry in _languages) {
+                    if (entry.Key.StartsWith(shortCode) && entry.Value.TranslationDictionary.TryGetValue(key, out string result)) {
                         // Found an alternative.
                         return result;
                     }
@@ -325,8 +297,7 @@ namespace CSkyL.Translation
                 // No alternative was found - return default language.
                 return _languages[_defaultLanguage].TranslationDictionary[key];
             }
-            catch (Exception e)
-            {
+            catch (Exception e) {
                 // Don't care.  Just log the exception, as we really should have a default language.
                 Log.Err("Translator: " + e + "exception attempting fallback translation for key " + key + " at: " + Environment.NewLine + Environment.StackTrace);
             }
@@ -345,8 +316,7 @@ namespace CSkyL.Translation
 
             // Get the current assembly path and append our locale directory name.
             string assemblyPath = Utils.AssemblyPath;
-            if (assemblyPath.IsNullOrWhiteSpace())
-            {
+            if (assemblyPath.IsNullOrWhiteSpace()) {
                 Log.Err("Translator: assembly path was empty:" + assemblyPath);
                 return;
             }
@@ -355,8 +325,7 @@ namespace CSkyL.Translation
             string translationsPath = Path.Combine(assemblyPath, "Translations");
 
             // Ensure that the directory exists before proceeding.
-            if (!Directory.Exists(translationsPath))
-            {
+            if (!Directory.Exists(translationsPath)) {
                 Log.Err("Translator: translations directory not found");
                 return;
             }
@@ -365,8 +334,7 @@ namespace CSkyL.Translation
             LoadLanguages(Directory.GetFiles(translationsPath, "*.csv", SearchOption.TopDirectoryOnly), true);
 
             // Load translation files in lower directories, but only add entries if there's a corresponding top-level translation..
-            foreach (string directory in Directory.GetDirectories(translationsPath))
-            {
+            foreach (string directory in Directory.GetDirectories(translationsPath)) {
                 LoadLanguages(Directory.GetFiles(directory, "*.csv", SearchOption.AllDirectories), false);
             }
         }
@@ -379,20 +347,16 @@ namespace CSkyL.Translation
         private void LoadLanguages(string[] translationFiles, bool createNew)
         {
             // Load each file and attempt to deserialise as a translation file.
-            foreach (string translationFile in translationFiles)
-            {
+            foreach (string translationFile in translationFiles) {
                 // Read file.
-                try
-                {
+                try {
                     FileStream fileStream = new FileStream(translationFile, FileMode.Open, FileAccess.Read);
-                    using (StreamReader reader = new StreamReader(fileStream))
-                    {
+                    using (StreamReader reader = new StreamReader(fileStream)) {
                         // Language code is filename.
                         string languageCode = Path.GetFileNameWithoutExtension(translationFile);
 
                         // Check for existing entry for this language.
-                        if (!_languages.TryGetValue(languageCode, out Language thisLanguage))
-                        {
+                        if (!_languages.TryGetValue(languageCode, out Language thisLanguage)) {
                             // No existing language - create a new language instance for this file.
                             thisLanguage = new Language
                             {
@@ -410,24 +374,19 @@ namespace CSkyL.Translation
 
                         // Iterate through each line of file.
                         string line = reader.ReadLine();
-                        while (line != null)
-                        {
+                        while (line != null) {
                             // Iterate through each character in line.
-                            for (int i = 0; i < line.Length; ++i)
-                            {
+                            for (int i = 0; i < line.Length; ++i) {
                                 // Local reference.
                                 char thisChar = line[i];
 
                                 // Are we parsing quoted text?
-                                if (quoting)
-                                {
+                                if (quoting) {
                                     // Is this character a quote?
-                                    if (thisChar == '"')
-                                    {
+                                    if (thisChar == '"') {
                                         // Is this a double quote?
                                         int j = i + 1;
-                                        if (j < line.Length && line[j] == '"')
-                                        {
+                                        if (j < line.Length && line[j] == '"') {
                                             // Yes - append single quote to output and continue.
                                             i = j;
                                             builder.Append('"');
@@ -438,25 +397,20 @@ namespace CSkyL.Translation
                                         quoting = false;
 
                                         // If we're parsing a value, this is also the end of parsing this line (discard everything else).
-                                        if (!parseKey)
-                                        {
+                                        if (!parseKey) {
                                             break;
                                         }
                                     }
-                                    else
-                                    {
+                                    else {
                                         // Not a closing quote - just append character to our parsed value.
                                         builder.Append(thisChar);
                                     }
                                 }
-                                else
-                                {
+                                else {
                                     // Not parsing quoted text - is this a comma?
-                                    if (thisChar == ',')
-                                    {
+                                    if (thisChar == ',') {
                                         // Comma - if we're parsing a value, this is also the end of parsing this line (discard everything else).
-                                        if (!parseKey)
-                                        {
+                                        if (!parseKey) {
                                             break;
                                         }
 
@@ -465,13 +419,11 @@ namespace CSkyL.Translation
                                         key = builder.ToString();
                                         builder.Length = 0;
                                     }
-                                    else if (thisChar == '"' & builder.Length == 0)
-                                    {
+                                    else if (thisChar == '"' & builder.Length == 0) {
                                         // If this is a quotation mark at the start of a field (immediately after comma), then we start parsing this as quoted text.
                                         quoting = true;
                                     }
-                                    else
-                                    {
+                                    else {
                                         // Otherwise, just append character to our parsed string.
                                         builder.Append(thisChar);
                                     }
@@ -479,23 +431,20 @@ namespace CSkyL.Translation
                             }
 
                             // Finished looping through chars - are we still parsing quoted text?
-                            if (quoting)
-                            {
+                            if (quoting) {
                                 // Yes; continue, after adding a newline.
                                 builder.AppendLine();
                                 goto NextLine;
                             }
 
                             // Was key empty?
-                            if (key.IsNullOrWhiteSpace())
-                            {
+                            if (key.IsNullOrWhiteSpace()) {
                                 Log.Err("Translator: invalid key in line " + line);
                                 goto Reset;
                             }
 
                             // Did we get two delimited fields (key and value?)
-                            if (parseKey | builder.Length == 0)
-                            {
+                            if (parseKey | builder.Length == 0) {
                                 Log.Err("Translator: no value field found in line " + line);
                                 goto Reset;
                             }
@@ -505,28 +454,23 @@ namespace CSkyL.Translation
 
                             // Handling line breaks.
                             value = value.Replace("\\n", "\n");
-                            
+
                             builder.Length = 0;
 
                             // Check if this entry is the language entry.
-                            if (key.Equals(Language.NameKey))
-                            {
+                            if (key.Equals(Language.NameKey)) {
                                 // Language readable name.
                                 thisLanguage.Name = value;
                             }
-                            else
-                            {
+                            else {
                                 // Normal entry - check for duplicates.
-                                if (!thisLanguage.TranslationDictionary.ContainsKey(key))
-                                {
+                                if (!thisLanguage.TranslationDictionary.ContainsKey(key)) {
                                     thisLanguage.TranslationDictionary.Add(key, value);
                                     ++addedEntries;
                                 }
-                                else
-                                {
+                                else {
                                     // Ignore duplicates for language name key.
-                                    if (key != Language.NameKey)
-                                    {
+                                    if (key != Language.NameKey) {
                                         Log.Err("Translator: duplicate translation key " + key + " in file " + translationFile);
                                     }
                                 }
@@ -544,17 +488,14 @@ namespace CSkyL.Translation
                         }
 
                         // Did we get a valid dictionary from this?
-                        if (thisLanguage.Code != null && addedEntries > 0)
-                        {
+                        if (thisLanguage.Code != null && addedEntries > 0) {
                             Log.Msg("Translator: read translation file " + translationFile + " with language " + thisLanguage.Code +
                                 " (" + thisLanguage.Name + ") with " + addedEntries + " added entries");
 
                             // Do we have an existing entry for this language?
-                            if (!_languages.ContainsKey(thisLanguage.Code))
-                            {
+                            if (!_languages.ContainsKey(thisLanguage.Code)) {
                                 // No - if we're not creating new language entries, then skip this and go to the next file.
-                                if (!createNew)
-                                {
+                                if (!createNew) {
                                     continue;
                                 }
 
@@ -563,8 +504,7 @@ namespace CSkyL.Translation
                                     Log.Msg("Translator: adding new language entry");
 
                                     // If we didn't get a readable name, use the key instead.
-                                    if (thisLanguage.Name.IsNullOrWhiteSpace())
-                                    {
+                                    if (thisLanguage.Name.IsNullOrWhiteSpace()) {
                                         Log.Err("Translator: no language name provided; using language code instead");
                                         thisLanguage.Name = thisLanguage.Code;
                                     }
@@ -574,14 +514,12 @@ namespace CSkyL.Translation
                                 _languages.Add(thisLanguage.Code, thisLanguage);
                             }
                         }
-                        else
-                        {
+                        else {
                             Log.Err("Translator: file " + translationFile + " did not produce a valid translation dictionary");
                         }
                     }
                 }
-                catch (Exception e)
-                {
+                catch (Exception e) {
                     // Don't let a single exception stop us; keep going through remaining files.
                     Log.Err("Translator: " + e + "exception reading translation file " + translationFile);
                 }

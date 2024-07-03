@@ -6,38 +6,38 @@
 
     public static class Patcher
     {
-        public static void PatchOnReady(System.Reflection.Assembly assembly)
+        public static void PatchOnReady(System.Reflection.Assembly assembly, string HarmonyID)
         {
             try {
-                HarmonyHelper.DoOnHarmonyReady(() => Patch(assembly));
+                HarmonyHelper.EnsureHarmonyInstalled();
+                HarmonyHelper.DoOnHarmonyReady(() => Patch(assembly, HarmonyID));
             }
             catch (System.Exception e) {
                 Log.Err("Harmony: " + e.ToString());
             }
         }
-        public static void TryUnpatch(System.Reflection.Assembly assembly)
+        public static void TryUnpatch(string HarmonyID)
         {
             try {
-                if (HarmonyHelper.IsHarmonyInstalled) Unpatch(assembly);
+                if (HarmonyHelper.IsHarmonyInstalled) Unpatch(HarmonyID);
             }
             catch (System.Exception e) {
                 Log.Err("Harmony: " + e.ToString());
             }
         }
 
-        public static void Patch(System.Reflection.Assembly assembly)
+        public static void Patch(System.Reflection.Assembly assembly, string HarmonyID)
         {
-            var name = assembly.GetName().Name;
-            if (_patchedAssemblies.Contains(name)) {
-                Log.Warn("Harmony: <{name}> already patched");
+            if (_patchedAssemblies.Contains(HarmonyID)) {
+                Log.Warn($"Harmony: <{HarmonyID}> already patched");
                 return;
             }
 
-            Log.Msg($"Harmony: patching <{name}>");
+            Log.Msg($"Harmony: patching <{HarmonyID}>");
             try {
-                var harmony = new Harmony(name);
+                var harmony = new Harmony(HarmonyID);
                 harmony.PatchAll(assembly);
-                _patchedAssemblies.Add(name);
+                _patchedAssemblies.Add(HarmonyID);
                 Log.Msg(" -- patched");
             }
             catch (System.Exception e) {
@@ -45,18 +45,17 @@
             }
         }
 
-        public static void Unpatch(System.Reflection.Assembly assembly)
+        public static void Unpatch(string HarmonyID)
         {
-            var name = assembly.GetName().Name;
-            if (!_patchedAssemblies.Remove(name)) {
-                Log.Warn("Harmony: <{name}> never been patched");
+            if (!_patchedAssemblies.Remove(HarmonyID)) {
+                Log.Warn($"Harmony: <{HarmonyID}> never been patched");
                 return;
             }
 
-            Log.Msg($"Harmony: unpatching <{name}>");
+            Log.Msg($"Harmony: unpatching <{HarmonyID}>");
             try {
-                var harmony = new Harmony(name);
-                harmony.UnpatchAll(name);
+                var harmony = new Harmony(HarmonyID);
+                harmony.UnpatchAll(HarmonyID);
                 Log.Msg(" -- unpatched");
             }
             catch (System.Exception e) {
@@ -64,8 +63,8 @@
             }
         }
 
-        public static bool HasPatched(System.Reflection.Assembly assembly)
-            => _patchedAssemblies.Contains(assembly.GetName().Name);
+        public static bool HasPatched(string HarmonyID)
+            => _patchedAssemblies.Contains(HarmonyID);
 
         private static readonly List<string> _patchedAssemblies = new List<string>();
     }

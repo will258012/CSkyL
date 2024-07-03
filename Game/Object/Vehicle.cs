@@ -7,7 +7,7 @@ namespace CSkyL.Game.Object
     using Ctransl = CSkyL.Translation.Translations;
     public abstract class Vehicle : Object<VehicleID>, IObjectToFollow
     {
-        public override string Name => manager.GetVehicleName(GetHeadVehicleID()._index);
+        public override string Name => manager.GetVehicleName(GetHeadVehicleID().Value);
 
         public PathData GetPathData()
         {
@@ -84,7 +84,7 @@ namespace CSkyL.Game.Object
                                                GetVehicle().GetFirstVehicle(_vid));
 
         public static VehicleID GetHeadVehicleIDof(VehicleID id)
-            => VehicleID._FromIndex(_GetVehicle(id).GetFirstVehicle(id._index));
+            => VehicleID._FromIndex(_GetVehicle(id).GetFirstVehicle(id.Value));
         public VehicleID GetHeadVehicleID()
             => VehicleID._FromIndex(GetVehicle().GetFirstVehicle(_vid));
         public ObjectID GetOwnerID()
@@ -184,10 +184,10 @@ namespace CSkyL.Game.Object
 
         protected Vehicle(VehicleID id) : base(id)
         {
-            _vid = id._index;
+            _vid = id.Value;
         }
         private static ref global::Vehicle _GetVehicle(VehicleID id)
-            => ref manager.m_vehicles.m_buffer[id._index];
+            => ref manager.m_vehicles.m_buffer[id.Value];
         protected bool _Is(global::Vehicle.Flags flags) => (GetVehicle().m_flags & flags) != 0;
         protected bool _IsOfService(ItemClass.Service service)
             => GetVehicle().Info.GetService() == service;
@@ -197,7 +197,6 @@ namespace CSkyL.Game.Object
 
         protected ushort _vid;
 
-
-        private static readonly VehicleManager manager = VehicleManager.instance;
+        private static readonly VehicleManager manager = ColossalFramework.Singleton<VehicleManager>.instance;
     }
 }

@@ -62,6 +62,7 @@
         }
     }
 
+
     public interface IDestruction { }
     public interface ICustomDestruction : IDestruction
     { void _Destruct(); }

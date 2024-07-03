@@ -193,7 +193,7 @@ namespace CSkyL.UI
             dropdown.Choice = Ctransl.Index;
             dropdown.SetTriggerAction((value)
                 => {
-                    if(Ctransl.Index != value) Ctransl.Index = value;
+                    if (Ctransl.Index != value) Ctransl.Index = value;
                     var langcode = Ctransl.CurrentLanguage;
                     config.Assign(langcode); configProps.configObj.Save();
                 });

@@ -55,14 +55,16 @@
     <Reference Include="UnityEngine" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Game\Control.UIManager.cs" />
+    <Compile Include="Game\Control.Lod.cs" />
     <Compile Include="ModSupport.cs" />
+    <Compile Include="Patch\LodPatches.cs" />
     <Compile Include="Translation\Language.cs" />
     <Compile Include="Translation\Translations.cs" />
     <Compile Include="Translation\Translator.cs" />
     <Compile Include="Game\PathUtil.cs" />
     <Compile Include="Mod.cs" />
     <Compile Include="Translation\Utils.cs" />
-    <Compile Include="UI\OverlayUtil.cs" />
     <Compile Include="Utils.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="Transform.cs" />

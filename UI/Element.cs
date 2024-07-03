@@ -1,9 +1,9 @@
 ﻿namespace CSkyL.UI
 {
     using ColossalFramework.UI;
+    using Ctransl = Translation.Translations;
     using Vec2 = UnityEngine.Vector2;
     using Vec3 = UnityEngine.Vector3;
-    using Ctransl = Translation.Translations;
 
     /*  Usage Examples:
      * 
@@ -593,7 +593,7 @@
         private System.Func<UnityEngine.KeyCode, UnityEngine.KeyCode?> _action = null;
 
 
-        private static void _KeyPressAction(KeyInput input, UIComponent comp,
+        private static void _KeyPressAction(KeyInput input, UIComponent _,
                                                             UIKeyEventParameter param)
         {
             if (!input._waitingInput) return;
@@ -610,7 +610,7 @@
             input.Key = inputKey;
         }
 
-        private static void _MouseEventAction(KeyInput input, UIComponent comp,
+        private static void _MouseEventAction(KeyInput input, UIComponent _,
                                                               UIMouseEventParameter param)
         {
             if (input._waitingInput) {

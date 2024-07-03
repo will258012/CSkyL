@@ -10,7 +10,8 @@
         public readonly string description;
         public readonly string detail;
         public ConfigAttribute(string name, string TranslateDescription_Key, string TranslateDetail_Key = "") : base(name)
-        { this.description = Ctransl.Translate(TranslateDescription_Key);
+        {
+            this.description = Ctransl.Translate(TranslateDescription_Key);
             //there's no need to translate if "TranslateDetail_Key" is not set
             if (!string.IsNullOrEmpty(TranslateDetail_Key)) this.detail = Ctransl.Translate(TranslateDetail_Key);
         }

@@ -17,6 +17,9 @@ namespace CSkyL
             set {
                 _logger = value;
                 Msg("Using CSkyL v" + Assembly.GetExecutingAssembly().GetName().Version);
+#if DEBUG
+                Warn("YOU ARE USING A DEBUGGING VERSION. MAY BE UNSTANBLE!");
+#endif
             }
         }
 
@@ -48,7 +51,7 @@ namespace CSkyL
         {
             _logPath = $"{name}.log";
             _lastLogPath = $"{name}.old.log";
-            
+
             if (File.Exists(_logPath)) File.Copy(_logPath, _lastLogPath, true);
             using (var f = File.Create(_logPath)) { }
         }
@@ -89,7 +92,7 @@ namespace CSkyL
         public void Warn(string msg) { UnityEngine.Debug.LogWarning($"{logTag} {msg}"); }
         public void Err(string msg) { UnityEngine.Debug.LogError($"{logTag} {msg}"); }
     }
-   
+
     public class DialogLog : ILog
     {
         private static readonly string msgTag
@@ -102,5 +105,5 @@ namespace CSkyL
         private static ExceptionPanel Panel
             => UIView.library.ShowModal<ExceptionPanel>("ExceptionPanel");
     }
-   
+
 }

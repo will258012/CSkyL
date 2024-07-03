@@ -9,7 +9,7 @@
         public override void _MoreDetails(ref Utils.Infos details)
         {
             GetLoadAndCapacity(out int load, out int capacity);
-            details[Ctransl.Translate("INFO_VEHICLE_LOAD")] = capacity > 0 ? ((float)load / capacity).ToString("P1")
+            details[Ctransl.Translate("INFO_VEHICLE_LOAD")] = capacity > 0 ? ((float) load / capacity).ToString("P1")
                                          : Ctransl.Translate("INVALID");
         }
     }
@@ -40,11 +40,11 @@
             details[Ctransl.Translate("INFO_VEHICLE_SERVICE")] = _typeName;
 
             GetLoadAndCapacity(out int load, out int capacity);
-            if (capacity > 0) details[Ctransl.Translate("INFO_VEHICLE_LOAD")] = ((float)load / capacity).ToString("P1");
+            if (capacity > 0) details[Ctransl.Translate("INFO_VEHICLE_LOAD")] = ((float) load / capacity).ToString("P1");
         }
         private readonly string _typeName;
     }
-//Fix the mechanism that replaces 'Load' with 'Work Shift' ('负载量' 替换为 '轮班') does not work
+    //Fix the mechanism that replaces 'Load' with 'Work Shift' ('负载量' 替换为 '轮班') does not work
     public class Taxi : ServiceVehicle
     {
         public Taxi(VehicleID id) : base(id, Ctransl.Translate("VEHICLE_AITYPE_TAXI")) { }
@@ -53,8 +53,7 @@
         {
             base._MoreDetails(ref details);
             int index = details.FindIndex((_info) => _info.field == Ctransl.Translate("INFO_VEHICLE_LOAD"));
-            if (index >= 0)
-            {
+            if (index >= 0) {
                 details[index] = new Utils.Info(Ctransl.Translate("INFO_VEHICLE_WORKSHIFT"), details[index].text);
             }
         }
@@ -68,8 +67,7 @@
         {
             base._MoreDetails(ref details);
             int index = details.FindIndex((_info) => _info.field == Ctransl.Translate("INFO_VEHICLE_LOAD"));
-            if (index >= 0)
-            {
+            if (index >= 0) {
 
                 details[index] = new Utils.Info(Ctransl.Translate("INFO_VEHICLE_WORKSHIFT"), details[index].text);
             }

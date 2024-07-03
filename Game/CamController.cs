@@ -5,7 +5,7 @@ namespace CSkyL.Game
 
     public class CamController
     {
-        public static CamController I {
+        public static CamController instance {
             get {
                 if (_instance is null || _instance._controller == null) {
                     _instance = new CamController();

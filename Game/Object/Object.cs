@@ -76,7 +76,7 @@ namespace CSkyL.Game.Object
     {
         public override string Name => GetName(id);
         public static string GetName(BuildingID id)
-            => BuildingManager.instance.GetBuildingName(id._index, id._iID);
+            => BuildingManager.instance.GetBuildingName(id.Value, id._iID);
 
         internal static Building _Of(BuildingID id) => new Building(id);
         private Building(BuildingID id) : base(id) { }
@@ -85,7 +85,7 @@ namespace CSkyL.Game.Object
     {
         public override string Name => GetName(id);
         public static string GetName(TransitID id)
-            => TransportManager.instance.GetLineName(id._index);
+            => TransportManager.instance.GetLineName(id.Value);
 
         internal static TransitLine _Of(TransitID id) => new TransitLine(id);
         private TransitLine(TransitID id) : base(id) { }
@@ -95,7 +95,8 @@ namespace CSkyL.Game.Object
         public TransitID TransitLineID => GetTransitLineID(id);
         public static TransitID GetTransitLineID(NodeID id)
             => TransitID._FromIndex(NetManager.instance.m_nodes
-                            .m_buffer[id._index].m_transportLine);
+                            .m_buffer[id.Value].m_transportLine);
+
 
         internal static Node _Of(NodeID id) => new Node(id);
         private Node(NodeID id) : base(id) { }
@@ -104,7 +105,7 @@ namespace CSkyL.Game.Object
     {
         public override string Name => GetName(id);
         public static string GetName(SegmentID id)
-            => NetManager.instance.GetSegmentName(id._index);
+            => NetManager.instance.GetSegmentName(id.Value);
 
         internal static Segment _Of(SegmentID id) => new Segment(id);
         private Segment(SegmentID id) : base(id) { }
@@ -113,9 +114,18 @@ namespace CSkyL.Game.Object
     {
         public override string Name => GetName(id);
         public static string GetName(DistrictID id)
-            => DistrictManager.instance.GetDistrictName(id._index);
+            => DistrictManager.instance.GetDistrictName(id.Value);
 
         internal static District _Of(DistrictID id) => new District(id);
         private District(DistrictID id) : base(id) { }
+    }
+    public class DLCDistrict : Object<DistrictID>
+    {
+        public override string Name => GetName(id);
+        public static string GetName(DistrictID id) => DistrictManager.instance.GetParkName(id.Value);
+        public static byte GetDistrictType(DistrictID id) => (byte) DistrictPark.GetParkGroup(DistrictManager.instance.m_parks.m_buffer[id.Value].m_parkType);
+        internal static DLCDistrict _Of(DistrictID id) => new DLCDistrict(id);
+        private DLCDistrict(DistrictID id) : base(id) { }
+
     }
 }

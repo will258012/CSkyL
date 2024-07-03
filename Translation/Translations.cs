@@ -16,8 +16,7 @@ namespace CSkyL.Translation
         /// <summary>
         /// Gets or sets the currently active language code.
         /// </summary>
-        public static string CurrentLanguage
-        {
+        public static string CurrentLanguage {
             get => Instance.CurrentLanguage;
             set => Instance.SetLanguage(value);
         }
@@ -35,8 +34,7 @@ namespace CSkyL.Translation
         /// Set to set the language to the equivalent LanguageList index.
         /// Get to return the LanguageList index of the current languge.
         /// </summary>
-        public static int Index
-        {
+        public static int Index {
             // Internal index is one less than here.
             // I.e. internal index is -1 for system and 0 for first language, here we want 0 for system and 1 for first language.
             // So we add one when getting and subtract one when setting.
@@ -50,14 +48,11 @@ namespace CSkyL.Translation
         /// If none is currently active, a new one will be instantiated.
         /// </summary>
         /// <returns>Translator instance.</returns>
-        private static Translator Instance
-        {
-            get
-            {
-                if (_translator == null)
-                {
+        private static Translator Instance {
+            get {
+                if (_translator == null) {
                     _translator = new Translator();
-                     var index = Utils.ConfigLanguageCode;
+                    var index = Utils.ConfigLanguageCode;
                     _translator.SetLanguage(index);
                 }
 

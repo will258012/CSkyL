@@ -56,6 +56,14 @@ namespace CSkyL.Game
                    DistrictID._FromIndex(result.m_district) : null;
         }
 
+        public static DistrictID RayCastDLCDistrict(Position position)
+        {
+            var input = Tool._GetRaycastInput(position._AsVec);
+            input.m_ignoreParkFlags = DistrictPark.Flags.None | DistrictPark.Flags.Invalid;
+
+            return Tool._RayCast(input, 5f) is ToolBase.RaycastOutput result ?
+                   DistrictID._FromIndex(result.m_park) : null;
+        }
         private class Tool : ToolBase
         {
             internal static RaycastOutput? _RayCast(
