@@ -93,14 +93,14 @@ namespace CSkyL.Game.Object
         // capacity == 0: invalid
         public void GetLoadAndCapacity(out int load, out int capacity)
             => _VAI.GetBufferStatus(_vid, ref GetVehicle(), out _, out load, out capacity);
-
+        
         public static IEnumerable<Vehicle> GetIf(System.Func<Vehicle, bool> filter)
         {
-            return Enumerable.Range(1, manager.m_vehicleCount)
+            return Enumerable.Range(1, manager.m_vehicles.m_buffer.Length - 1)
                     .Select(i => Of(VehicleID._FromIndex((ushort) i)) as Vehicle)
                     .Where(v => v is Vehicle && filter(v));
         }
-
+        
         internal static Vehicle _Of(VehicleID id)
         {
             var ai = _GetVehicle(GetHeadVehicleIDof(id)).Info.m_vehicleAI;
