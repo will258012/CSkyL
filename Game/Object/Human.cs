@@ -107,7 +107,7 @@ namespace CSkyL.Game.Object
 
         public static IEnumerable<Pedestrian> GetIf(System.Func<Pedestrian, bool> filter)
         {
-            return Enumerable.Range(1, manager.m_instanceCount)
+            return Enumerable.Range(1, manager.m_instances.m_buffer.Length - 1)
                     .Select(i => Of(PedestrianID._FromIndex((ushort) i)) as Pedestrian)
                     .Where(p => p is Pedestrian && filter(p));
         }
