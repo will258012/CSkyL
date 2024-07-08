@@ -18,7 +18,7 @@ namespace CSkyL
                 _logger = value;
                 Msg("Using CSkyL v" + Assembly.GetExecutingAssembly().GetName().Version);
 #if DEBUG
-                Warn("YOU ARE USING A DEBUGGING VERSION. MAY BE UNSTANBLE!");
+                Warn("YOU ARE USING A DEBUGGING VERSION. MAY BE UNSTABLE!");
 #endif
             }
         }
