@@ -1,6 +1,7 @@
 namespace CSkyL.Game.Object
 {
     using CSkyL.Game.ID;
+    using CSkyL.Game.Utils;
     using CSkyL.Transform;
     using System.Collections.Generic;
     using System.Linq;
@@ -82,9 +83,9 @@ namespace CSkyL.Game.Object
             }
             return status;
         }
-        public Utils.Infos GetInfos()
+        public GameUtil.Infos GetInfos()
         {
-            Utils.Infos details = new Utils.Infos();
+            GameUtil.Infos details = new GameUtil.Infos();
 
             string occupation;
             if (IsTourist) occupation = Ctransl.Translate("INFO_HUMAN_TOURIST");

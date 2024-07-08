@@ -1,6 +1,7 @@
 namespace CSkyL.Game.Object
 {
     using CSkyL.Game.ID;
+    using CSkyL.Game.Utils;
     using CSkyL.Transform;
     using UnityEngine;
 
@@ -35,7 +36,7 @@ namespace CSkyL.Game.Object
         uint GetTargetFrame();
         float GetSpeed();
         Positioning GetPositioning();
-        Utils.Infos GetInfos();
+        GameUtil.Infos GetInfos();
         string GetStatus();
         string GetPrefabName();
     }

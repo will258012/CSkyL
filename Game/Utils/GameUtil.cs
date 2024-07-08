@@ -1,9 +1,9 @@
-﻿namespace CSkyL.Game
+﻿namespace CSkyL.Game.Utils
 {
     using System.Collections.Generic;
     using UnityEngine;
 
-    public static class Utils
+    public static class GameUtil
     {
         public static bool InGameMode
             => ToolManager.instance is ToolManager m && m.m_properties.m_mode == ItemClass.Availability.Game;

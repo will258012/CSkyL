@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using ToggleItManager = ToggleIt.Managers.ToggleManager;
+using ColossalFramework;
 namespace CSkyL.Game
 {
     public static partial class Control
@@ -80,21 +81,21 @@ namespace CSkyL.Game
                 else {
                     RestoreState();
                 }
-                ColossalFramework.Singleton<PropManager>.instance.MarkersVisible = visibility;
-                ColossalFramework.Singleton<GuideManager>.instance.TutorialDisabled = !visibility;
-                ColossalFramework.Singleton<DisasterManager>.instance.MarkersVisible = visibility;
+                Singleton<PropManager>.instance.MarkersVisible = visibility;
+                Singleton<GuideManager>.instance.TutorialDisabled = !visibility;
+                Singleton<DisasterManager>.instance.MarkersVisible = visibility;
             }
 
             private static void SetUIVisibilityDirectly(bool visibility)
             {
                 ColossalFramework.UI.UIView.Show(visibility);
-                ColossalFramework.Singleton<NotificationManager>.instance.NotificationsVisible = visibility;
-                ColossalFramework.Singleton<GameAreaManager>.instance.BordersVisible = visibility;
-                ColossalFramework.Singleton<DistrictManager>.instance.NamesVisible = visibility;
-                ColossalFramework.Singleton<PropManager>.instance.MarkersVisible = visibility;
-                ColossalFramework.Singleton<GuideManager>.instance.TutorialDisabled = !visibility;
-                ColossalFramework.Singleton<DisasterManager>.instance.MarkersVisible = visibility;
-                ColossalFramework.Singleton<NetManager>.instance.RoadNamesVisible = visibility;
+                Singleton<NotificationManager>.instance.NotificationsVisible = visibility;
+                Singleton<GameAreaManager>.instance.BordersVisible = visibility;
+                Singleton<DistrictManager>.instance.NamesVisible = visibility;
+                Singleton<PropManager>.instance.MarkersVisible = visibility;
+                Singleton<GuideManager>.instance.TutorialDisabled = !visibility;
+                Singleton<DisasterManager>.instance.MarkersVisible = visibility;
+                Singleton<NetManager>.instance.RoadNamesVisible = visibility;
             }
         }
     }

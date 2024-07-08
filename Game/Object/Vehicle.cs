@@ -1,6 +1,7 @@
 namespace CSkyL.Game.Object
 {
     using CSkyL.Game.ID;
+    using CSkyL.Game.Utils;
     using CSkyL.Transform;
     using System.Collections.Generic;
     using System.Linq;
@@ -51,9 +52,9 @@ namespace CSkyL.Game.Object
             return status;
         }
         public string GetPrefabName() => GetVehicle().Info.name;
-        public Utils.Infos GetInfos()
+        public GameUtil.Infos GetInfos()
         {
-            var details = new Utils.Infos();
+            var details = new GameUtil.Infos();
 
             var vehicle = _Of(GetHeadVehicleID());
             switch (vehicle.GetOwnerID()) {
@@ -66,7 +67,7 @@ namespace CSkyL.Game.Object
             vehicle._MoreDetails(ref details);
             return details;
         }
-        public virtual void _MoreDetails(ref Utils.Infos details) { }
+        public virtual void _MoreDetails(ref GameUtil.Infos details) { }
 
         public bool IsSpawned => _Is(global::Vehicle.Flags.Spawned);
         public bool IsGoingBack => _Is(global::Vehicle.Flags.GoingBack);
@@ -90,6 +91,7 @@ namespace CSkyL.Game.Object
         public ObjectID GetOwnerID()
             => ObjectID._FromIID(_VAI.GetOwnerID(_vid, ref GetVehicle()));
         public TransitID GetTransitLineID() => TransitID._FromIndex(GetVehicle().m_transportLine);
+        public string GetNextStationName() => StationUtil.GetStationName(GetVehicle().m_targetBuilding);
         // capacity == 0: invalid
         public void GetLoadAndCapacity(out int load, out int capacity)
             => _VAI.GetBufferStatus(_vid, ref GetVehicle(), out _, out load, out capacity);
@@ -198,5 +200,6 @@ namespace CSkyL.Game.Object
         protected ushort _vid;
 
         private static readonly VehicleManager manager = ColossalFramework.Singleton<VehicleManager>.instance;
+
     }
 }

@@ -1,12 +1,13 @@
 ﻿namespace CSkyL.Game.Object
 {
     using CSkyL.Game.ID;
+    using CSkyL.Game.Utils;
     using Ctransl = CSkyL.Translation.Translations;
     public class CargoVehicle : Vehicle
     {
         public CargoVehicle(VehicleID id) : base(id) { }
 
-        public override void _MoreDetails(ref Utils.Infos details)
+        public override void _MoreDetails(ref GameUtil.Infos details)
         {
             GetLoadAndCapacity(out int load, out int capacity);
             details[Ctransl.Translate("INFO_VEHICLE_LOAD")] = capacity > 0 ? ((float) load / capacity).ToString("P1")
@@ -19,11 +20,11 @@
         public TransitVehicle(VehicleID id, string transitType) : base(id)
         { _transitType = transitType; }
 
-        public override void _MoreDetails(ref Utils.Infos details)
+        public override void _MoreDetails(ref GameUtil.Infos details)
         {
             details[Ctransl.Translate("INFO_VEHICLE_PUBLICTRANSIT_TRANSIT")] = $"{_transitType}> " + (GetTransitLineID() is TransitID id ?
                                         TransitLine.GetName(id) : Ctransl.Translate("INFO_VEHICLE_PUBLICTRANSIT_IRREGULAR"));
-
+            details[Ctransl.Translate("INFO_VEHICLE_PUBLICTRANSIT_NEXTSTATIION")] = $"{(GetTransitLineID() is TransitID ? GetNextStationName() : string.Empty)}"; 
             GetLoadAndCapacity(out int load, out int capacity);
             details[Ctransl.Translate("INFO_VEHICLE_PUBLICTRANSIT_PASSENGER")] = $"{load,4} /{capacity,4}";
         }
@@ -35,7 +36,7 @@
     {
         public ServiceVehicle(VehicleID id, string typeName) : base(id) { _typeName = typeName; }
 
-        public override void _MoreDetails(ref Utils.Infos details)
+        public override void _MoreDetails(ref GameUtil.Infos details)
         {
             details[Ctransl.Translate("INFO_VEHICLE_SERVICE")] = _typeName;
 
@@ -49,12 +50,12 @@
     {
         public Taxi(VehicleID id) : base(id, Ctransl.Translate("VEHICLE_AITYPE_TAXI")) { }
 
-        public override void _MoreDetails(ref Utils.Infos details)
+        public override void _MoreDetails(ref GameUtil.Infos details)
         {
             base._MoreDetails(ref details);
             int index = details.FindIndex((_info) => _info.field == Ctransl.Translate("INFO_VEHICLE_LOAD"));
             if (index >= 0) {
-                details[index] = new Utils.Info(Ctransl.Translate("INFO_VEHICLE_WORKSHIFT"), details[index].text);
+                details[index] = new GameUtil.Info(Ctransl.Translate("INFO_VEHICLE_WORKSHIFT"), details[index].text);
             }
         }
     }
@@ -63,13 +64,13 @@
     {
         public Maintenance(VehicleID id) : base(id, Ctransl.Translate("VEHICLE_AITYPE_MAINTENANCE")) { }
 
-        public override void _MoreDetails(ref Utils.Infos details)
+        public override void _MoreDetails(ref GameUtil.Infos details)
         {
             base._MoreDetails(ref details);
             int index = details.FindIndex((_info) => _info.field == Ctransl.Translate("INFO_VEHICLE_LOAD"));
             if (index >= 0) {
 
-                details[index] = new Utils.Info(Ctransl.Translate("INFO_VEHICLE_WORKSHIFT"), details[index].text);
+                details[index] = new GameUtil.Info(Ctransl.Translate("INFO_VEHICLE_WORKSHIFT"), details[index].text);
             }
         }
     }

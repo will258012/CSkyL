@@ -1,6 +1,4 @@
-﻿
-
-namespace CSkyL.Game
+﻿namespace CSkyL.Game.Utils
 {
     using ColossalFramework.Math;
     using CSkyL.Game.Object;
@@ -46,7 +44,7 @@ namespace CSkyL.Game
         {
             bezier = default;
             if ((finePathPosIndex & 1) == 0) return false; // transition is odd
-            if ((finePathPosIndex >> 1) >= pathUnit.m_positionCount) return false; // bad index
+            if (finePathPosIndex >> 1 >= pathUnit.m_positionCount) return false; // bad index
             var pathPos1 = pathUnit.GetPosition(finePathPosIndex >> 1);
             if (pathPos1.m_segment == 0) return false;
             if (!pathUnit.GetNextPosition(finePathPosIndex >> 1, out var pathPos2)) return false;
@@ -245,7 +243,7 @@ namespace CSkyL.Game
                 finePathIndex = 0;
                 pathUnitID = pathUnitID.ToPathUnit().m_nextPathUnit;
             }
-            if ((finePathIndex >> 1) >= pathUnitID.ToPathUnit().m_positionCount
+            if (finePathIndex >> 1 >= pathUnitID.ToPathUnit().m_positionCount
                 || pathUnitID == 0) {
                 pathPos = default;
                 return false;
