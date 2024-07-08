@@ -97,6 +97,7 @@
     <None Include="packages.config" />
     <None Include="Translations\en-EN.csv" />
     <None Include="Translations\zh-CN.csv" />
+    <None Include="Translations\zh-TW.csv" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
