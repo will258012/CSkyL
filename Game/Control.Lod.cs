@@ -20,7 +20,6 @@ namespace CSkyL.Game
                     }
                     Log.Msg("-- Refreshing LOD");
                     RefreshLODs();
-                    //UpdateShadowDistance(LodConfig.ActiveConfig.MaxShadowDistance);
                     if (!status) LodConfig.ActiveConfig = null;
                 }
 
@@ -33,14 +32,10 @@ namespace CSkyL.Game
             private static void RefreshLODs()
             {
                 refreshLods<TreeInfo>();
-                //UpdateRenderGroups(TreeManager.instance.m_treeLayer);
                 refreshLods<PropInfo>();
-                //UpdateRenderGroups(LayerMask.NameToLayer("Props"));
                 refreshLods<BuildingInfo>();
                 refreshLods<BuildingInfoSub>();
-                //UpdateRenderGroups(LayerMask.NameToLayer("Buildings"));
                 refreshLods<NetInfo>();
-                //UpdateRenderGroups(LayerMask.NameToLayer("Road"));
                 refreshLods<VehicleInfo>();
                 refreshLods<CitizenInfo>();
             }
@@ -63,38 +58,15 @@ namespace CSkyL.Game
                     ToolsModifierControl.toolController.m_editPrefabInfo.RefreshLevelOfDetail();
                 }
             }
-            /*
-            private static void UpdateShadowDistance(float ShadowDistance)
-            {
-                var mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
-                if (mainCamera) {
-                    var cameraController = GameObject.FindGameObjectWithTag("MainCamera")?.GetComponent<CameraController>();
-                    if (cameraController != null) {
-                        cameraController.m_maxShadowDistance = ShadowDistance;
-                    }
-                }
-            }
-            */
-            /*
-            private static void UpdateRenderGroups(int layer)
-            {
-                // Local reference.
-                RenderManager renderManager = Singleton<RenderManager>.instance;
-
-                // Iterate through all render groups.
-                foreach (RenderGroup renderGroup in renderManager.m_groups) {
-                    // Null check.
-                    if (renderGroup != null) {
-                        // Refresh this group.
-                        renderGroup.SetLayerDataDirty(layer);
-                        renderGroup.UpdateMeshData();
-                    }
-                }
-            }
-            */
             internal class LodConfig
             {
-                internal LodConfig(float citizenLodDistance, float treeLodDistance, float propLodDistance, float decalPropFadeDistance, float buildingLodDistance, float networkLodDistance, float vehicleLodDistance/*, float maxShadowDistance*/)
+                internal LodConfig(float citizenLodDistance,
+                                   float treeLodDistance,
+                                   float propLodDistance,
+                                   float decalPropFadeDistance,
+                                   float buildingLodDistance,
+                                   float networkLodDistance,
+                                   float vehicleLodDistance)
                 {
                     CitizenLodDistance = citizenLodDistance;
                     TreeLodDistance = treeLodDistance;
@@ -103,7 +75,6 @@ namespace CSkyL.Game
                     BuildingLodDistance = buildingLodDistance;
                     NetworkLodDistance = networkLodDistance;
                     VehicleLodDistance = vehicleLodDistance;
-                    //MaxShadowDistance = maxShadowDistance;
                 }
 
                 internal float CitizenLodDistance { get; set; }
@@ -113,19 +84,18 @@ namespace CSkyL.Game
                 internal float BuildingLodDistance { get; set; }
                 internal float NetworkLodDistance { get; set; }
                 internal float VehicleLodDistance { get; set; }
-                //internal float MaxShadowDistance { get; set; }
 
                 internal static LodConfig Saved => savedconfig;
 
                 internal static LodConfig Optimized =>
-                    new LodConfig(100f,
+                    new LodConfig(60f,
                         150f,
-                        150f,
-                        150f,
+                        50f,
+                        120f,
                         250f,
-                        170f,
-                        150f/*,
-                        200f*/);
+                        180f,
+                        140f
+                        );
 
                 internal static LodConfig ActiveConfig = null;
                 private static LodConfig savedconfig;
@@ -148,11 +118,14 @@ namespace CSkyL.Game
                     case BuildingManager buildingManager:
                         return PrefabCollection<BuildingInfo>.GetPrefab((uint) buildingManager.m_infoCount - 1).m_minLodDistance;
                     case PropManager propManager when !IsPropManager_MaxRenderDistance:
-                        return PrefabCollection<PropInfo>.GetPrefab((uint) propManager.m_infoCount - 1).m_lodRenderDistance;
+                        //return PrefabCollection<PropInfo>.GetPrefab((uint) propManager.m_infoCount - 1).m_lodRenderDistance;
+                        return propManager.m_props.m_buffer[propManager.m_infoCount].Info.m_lodRenderDistance;
                     case PropManager propManager when IsPropManager_MaxRenderDistance:
-                        return PrefabCollection<PropInfo>.GetPrefab((uint) propManager.m_infoCount - 1).m_maxRenderDistance;
+                        //return PrefabCollection<PropInfo>.GetPrefab((uint) propManager.m_infoCount - 1).m_maxRenderDistance;
+                        return propManager.m_props.m_buffer[propManager.m_infoCount].Info.m_maxRenderDistance;
                     case NetManager netManager:
-                        return PrefabCollection<NetInfo>.GetPrefab((uint) netManager.m_infoCount - 1).m_segments[PrefabCollection<NetInfo>.GetPrefab((uint) netManager.m_infoCount - 1).m_segments.Length - 1].m_lodRenderDistance;
+                        var count = PrefabCollection<NetInfo>.GetPrefab((uint) netManager.m_infoCount - 1);
+                        return count.m_segments[count.m_segments.Length - 1].m_lodRenderDistance;
                     case VehicleManager vehicleManager:
                         return PrefabCollection<VehicleInfo>.GetPrefab((uint) vehicleManager.m_infoCount - 1).m_lodRenderDistance;
                     default:
@@ -162,8 +135,7 @@ namespace CSkyL.Game
 
                 internal static void SaveLodConfig()
                 {
-                    //var mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
-                    //var cameraController = mainCamera.GetComponent<CameraController>();
+                    var cameraController = UnityEngine.Object.FindObjectOfType<CameraController>();
                     try {
                         savedconfig = new LodConfig(
                             citizenLodDistance: GetLodDistance<CitizenInfo>(),
@@ -172,8 +144,7 @@ namespace CSkyL.Game
                             decalPropFadeDistance: GetLodDistance(Singleton<PropManager>.instance, true),
                             buildingLodDistance: GetLodDistance(Singleton<BuildingManager>.instance),
                             networkLodDistance: GetLodDistance(Singleton<NetManager>.instance),
-                            vehicleLodDistance: GetLodDistance(Singleton<VehicleManager>.instance) /*,
-                           maxShadowDistance: cameraController.m_maxShadowDistance*/);
+                            vehicleLodDistance: GetLodDistance(Singleton<VehicleManager>.instance));
 
                         Log.Msg($"Saved LOD Config:\n" +
                                 $"  CitizenLodDistance = {savedconfig.CitizenLodDistance}\n" +
@@ -182,8 +153,7 @@ namespace CSkyL.Game
                                 $"  DecalPropFadeDistance = {savedconfig.DecalPropFadeDistance}\n" +
                                 $"  BuildingLodDistance = {savedconfig.BuildingLodDistance}\n" +
                                 $"  NetworkLodDistance = {savedconfig.NetworkLodDistance}\n" +
-                                $"  VehicleLodDistance = {savedconfig.VehicleLodDistance}\n"/* +
-                                $"  MaxShadowDistance = {savedconfig.MaxShadowDistance}\n"*/);
+                                $"  VehicleLodDistance = {savedconfig.VehicleLodDistance}\n");
 
                     }
                     catch (Exception e) {
