@@ -2,7 +2,7 @@
 {
     using CSkyL.Game.ID;
     using CSkyL.Game.Utils;
-    using Ctransl = CSkyL.Translation.Translations;
+    using Ctransl = Translation.Translations;
     public class CargoVehicle : Vehicle
     {
         public CargoVehicle(VehicleID id) : base(id) { }
@@ -17,17 +17,38 @@
 
     public class TransitVehicle : Vehicle
     {
-        public TransitVehicle(VehicleID id, string transitType) : base(id)
-        { _transitType = transitType; }
+        public TransitVehicle(VehicleID id, string transitType) : base(id) { _transitType = transitType; }
 
         public override void _MoreDetails(ref GameUtil.Infos details)
         {
-            details[Ctransl.Translate("INFO_VEHICLE_PUBLICTRANSIT_TRANSIT")] = $"{_transitType}> " + (GetTransitLineID() is TransitID id ?
-                                        TransitLine.GetName(id) : Ctransl.Translate("INFO_VEHICLE_PUBLICTRANSIT_IRREGULAR"));
-            details[Ctransl.Translate("INFO_VEHICLE_PUBLICTRANSIT_NEXTSTATIION")] = $"{(GetTransitLineID() is TransitID ? GetNextStationName() : string.Empty)}"; 
+            var transitID = GetTransitLineID();
+            var transitTypeKey = GetTranslateKey();
+            var transitLineName = transitID is TransitID id ? TransitLine.GetName(id) : Ctransl.Translate("INFO_VEHICLE_PUBLICTRANSIT_IRREGULAR");
+
+            details[Ctransl.Translate("INFO_VEHICLE_PUBLICTRANSIT_TRANSIT")] = $"{_transitType}> {transitLineName}";
+            var hasNextStation = TryGetNextStation(out var name);
+            if (hasNextStation == true)
+                details[Ctransl.Translate(transitTypeKey)] = name;
             GetLoadAndCapacity(out int load, out int capacity);
             details[Ctransl.Translate("INFO_VEHICLE_PUBLICTRANSIT_PASSENGER")] = $"{load,4} /{capacity,4}";
         }
+
+        private bool TryGetNextStation(out string name)
+        {
+            if (GetTransitLineID() is TransitID) {
+                name = GetNextStationName();
+                return true;
+            }
+            name = null;
+            return false;
+        }
+
+        private string GetTranslateKey() =>
+            _transitType == Ctransl.Translate("VEHICLE_AITYPE_TRAM") ||
+            _transitType == Ctransl.Translate("VEHICLE_AITYPE_BUS") ||
+            _transitType == Ctransl.Translate("VEHICLE_AITYPE_TROLLEYBUS")
+                ? "INFO_VEHICLE_PUBLICTRANSIT_NEXTSTOP"
+                : "INFO_VEHICLE_PUBLICTRANSIT_NEXTSTATIION";
 
         private readonly string _transitType;
     }
