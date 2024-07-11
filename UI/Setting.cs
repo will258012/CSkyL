@@ -9,7 +9,7 @@ namespace CSkyL.UI
 
     public class SettingProperties : Properties
     {
-        public Config.Base configObj;
+        public Base configObj;
         public IConfigData config;
         public virtual void SetUpFromConfig()
         {

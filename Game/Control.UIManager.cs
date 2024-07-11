@@ -1,6 +1,6 @@
-﻿using System.Collections;
+﻿using ColossalFramework;
+using System.Collections;
 using ToggleItManager = ToggleIt.Managers.ToggleManager;
-using ColossalFramework;
 namespace CSkyL.Game
 {
     public static partial class Control

@@ -5,7 +5,7 @@ namespace CSkyL.Game.Object
     using CSkyL.Transform;
     using System.Collections.Generic;
     using System.Linq;
-    using Ctransl = CSkyL.Translation.Translations;
+    using Ctransl = Translation.Translations;
     public class Human : Object<HumanID>
     {
         public override string Name => manager.GetCitizenName(id.Value);

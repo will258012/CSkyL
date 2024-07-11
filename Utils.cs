@@ -153,8 +153,8 @@ namespace CSkyL
             public static Vec2D Size(float width, float height)
                 => new Vec2D { width = width, height = height };
 
-            internal UnityEngine.Vector2 _AsVec2 => new UnityEngine.Vector2(_x, _y);
-            internal static Vec2D _FromVec2(UnityEngine.Vector2 v)
+            internal Vector2 _AsVec2 => new Vector2(_x, _y);
+            internal static Vec2D _FromVec2(Vector2 v)
                 => new Vec2D { _x = v.x, _y = v.y };
 
             public override string ToString() => $"({_x}, {_y})";

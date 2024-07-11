@@ -60,7 +60,7 @@
             catch (FileNotFoundException) {
                 Log.Msg($"Config: file ({path}) missing");
             }
-            catch (System.Exception e) {
+            catch (Exception e) {
                 Log.Err($"Config: exception while loading ({path}): {e}");
             }
             return null;

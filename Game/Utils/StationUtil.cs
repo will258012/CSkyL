@@ -1,5 +1,4 @@
 ﻿using ColossalFramework;
-using CSkyL.Game.ID;
 using UnityEngine;
 
 namespace CSkyL.Game.Utils
@@ -48,7 +47,7 @@ namespace CSkyL.Game.Utils
             return $"<Somewhere>[{stopId}]";
         }
 
-        public static string GetTransportBuildingName(ushort buildingId)
+        private static string GetTransportBuildingName(ushort buildingId)
         {
             InstanceID bid = default;
             bid.Building = buildingId;
