@@ -1,7 +1,7 @@
-namespace CSkyL.Game
+namespace CSkyL.Game.Control
 {
     using UnityEngine;
-    public static partial class Control
+    public class InputManager
     {
         public static float MouseMoveHori => Input.GetAxis("Mouse X");  // +/-: right/left
         public static float MouseMoveVert => Input.GetAxis("Mouse Y");  // +/-: up/down
