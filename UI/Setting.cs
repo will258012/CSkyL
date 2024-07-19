@@ -127,7 +127,6 @@ namespace CSkyL.UI
         private readonly SliderSetting _forward, _up, _right;
     }
 
-
     public class ChoiceSetting<EnumType> : DropDown<EnumType>, ISetting
                         where EnumType : struct, System.IConvertible, System.IComparable
     {
@@ -205,16 +204,16 @@ namespace CSkyL.UI
 
         private readonly ConfigData<string> _config;
     }
-    public class KeyMapSetting : KeyInput, ISetting
+    public class KeyOnlyMapSetting : KeyOnlyInput, ISetting
     {
-        public KeyMapSetting() { }
+        public KeyOnlyMapSetting() { }
         public void UpdateUI() { if (Key != _config) Key = _config; }
 
         protected override Element _Create(Element parent, Properties props)
         {
             var configProps = props as SettingProperties;
             configProps.SetUpFromConfig();
-            var input = base._Create(parent, configProps) as KeyInput;
+            var input = base._Create(parent, configProps) as KeyOnlyInput;
             var config = configProps.config as ConfigData<UnityEngine.KeyCode>;
             input.Key = config;
             input.SetTriggerAction((key) => {
@@ -222,12 +221,62 @@ namespace CSkyL.UI
                 config.Assign(key); configProps.configObj.Save();
                 return key;
             });
-            return new KeyMapSetting(input, config);
+            return new KeyOnlyMapSetting(input, config);
         }
 
-        private KeyMapSetting(KeyInput input, ConfigData<UnityEngine.KeyCode> config) : base(input)
+        private KeyOnlyMapSetting(KeyOnlyInput input, ConfigData<UnityEngine.KeyCode> config) : base(input)
         { _config = config; }
 
         private readonly ConfigData<UnityEngine.KeyCode> _config;
+    }
+    public class KeyMapSetting : KeyInput, ISetting
+    {
+        public KeyMapSetting() { }
+        public void UpdateUI() { if (!Keys.Equals(_config.ToKeyCodeWithModifiers())) Keys = _config.ToKeyCodeWithModifiers(); }
+        protected override Element _Create(Element parent, Properties props)
+        {
+            var configProps = props as SettingProperties;
+            configProps.SetUpFromConfig();
+            var input = base._Create(parent, configProps) as KeyInput;
+            var config = configProps.config as CfKeyWithWithModifiers;
+            input.Keys = config;
+            input.SetTriggerAction((keys) => {
+                config.Assign(keys);
+                configProps.configObj.Save();
+                return keys;
+            });
+            return new KeyMapSetting(input, config);
+        }
+
+        private KeyMapSetting(KeyInput input, CfKeyWithWithModifiers config) : base(input)
+        { _config = config; }
+
+        private readonly CfKeyWithWithModifiers _config;
+    }
+    public class UUIKeySetting : KeyInput, ISetting
+    {
+        public UUIKeySetting() { }
+        public void UpdateUI() { if (!Keys.Equals(_config.ToKeyCodeWithModifiers())) Keys = _config.ToKeyCodeWithModifiers(); }
+        protected override Element _Create(Element parent, Properties props)
+        {
+            var configProps = props as SettingProperties;
+            configProps.SetUpFromConfig();
+            var input = base._Create(parent, configProps) as KeyInput;
+            var config = configProps.config as CfKeyWithWithModifiers;
+            input.Keys = config;
+            input.SetTriggerAction((keys) => {
+                config.Assign(keys);
+                configProps.configObj.Save();
+                UpdateToggleKeyEvent?.Invoke();
+                return keys;
+            });
+            return new UUIKeySetting(input, config);
+        }
+
+        private UUIKeySetting(KeyInput input, CfKeyWithWithModifiers config) : base(input)
+        { _config = config; }
+
+        private readonly CfKeyWithWithModifiers _config;
+        public static event System.Action UpdateToggleKeyEvent;
     }
 }

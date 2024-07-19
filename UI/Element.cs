@@ -57,9 +57,9 @@
             set => _UIComp.size = value._AsVec2;
         }
 
-        public virtual Style.Color color {
-            get => Style.Color._From32(_UIComp.color);
-            set => _UIComp.color = value._As32;
+        public virtual Style.CSkyLColor color {
+            get => Style.CSkyLColor._From32(_UIComp.color);
+            set => _UIComp.color = value.ToColor32();
         }
         public virtual float opacity {
             get => _UIComp.opacity;
@@ -547,7 +547,7 @@
         public readonly UIDropDown _dropdown;
     }
 
-    public class KeyInput : Element
+    public class KeyOnlyInput : Element
     {
         public UnityEngine.KeyCode Key {
             get => _key;
@@ -557,6 +557,95 @@
         // action returns the KeyCode to store (null: ignore the input)
         public void SetTriggerAction(System.Func<UnityEngine.KeyCode, UnityEngine.KeyCode?> action)
             => _action = action;
+        public KeyOnlyInput() { }
+
+        protected override Element _Create(Element parent, Properties props)
+        {
+            var panel = parent._AddTemplate<UIPanel>("KeyBindingTemplate", props.name);
+
+            var btn = panel.Find<UIButton>("Binding");
+            btn.buttonsMask = UIMouseButton.Right | UIMouseButton.Left;
+            btn.textColor = Style.Current._textColor;
+            btn.height *= Style.Current._scale; btn.textScale = Style.Current._scale;
+
+            var label = panel.Find<UILabel>("Name");
+            label.text = props.text; label.tooltip = props.tooltip;
+            label.textColor = Style.Current._textColor;
+            label.height *= Style.Current._scale; label.textScale = Style.Current._scale;
+
+            panel.height *= Style.Current._scale;
+
+            var input = new KeyOnlyInput(panel, btn);
+            btn.eventKeyDown += (c, p) => _KeyPressAction(input, c, p);
+            btn.eventMouseDown += (c, p) => _MouseEventAction(input, c, p);
+            return input;
+        }
+
+        internal protected override UIComponent _UIComp => _panel;
+        protected KeyOnlyInput(KeyOnlyInput keyInput) : this(keyInput._panel, keyInput._button) { }
+        private KeyOnlyInput(UIPanel panel, UIButton button) { _panel = panel; _button = button; }
+
+        [Game.RequireDestruction] public readonly UIPanel _panel;
+        public readonly UIButton _button;
+        private UnityEngine.KeyCode _key = UnityEngine.KeyCode.None;
+
+        private bool _waitingInput = false;
+        private System.Func<UnityEngine.KeyCode, UnityEngine.KeyCode?> _action = null;
+
+
+        private static void _KeyPressAction(KeyOnlyInput input, UIComponent _,
+                                                            UIKeyEventParameter param)
+        {
+            if (!input._waitingInput) return;
+
+            var inputKey = param.keycode;
+            if (input._action is object) {
+                if (input._action(inputKey) is UnityEngine.KeyCode key) inputKey = key;
+                else return;
+            }
+            param.Use();
+            UIView.PopModal();
+            input._waitingInput = false;
+
+            input.Key = inputKey;
+        }
+
+        private static void _MouseEventAction(KeyOnlyInput input, UIComponent _,
+                                                              UIMouseEventParameter param)
+        {
+            if (input._waitingInput) {
+                if (param.buttons == UIMouseButton.Left) {
+                    param.Use();
+                    UIView.PopModal();
+                    input._waitingInput = false;
+                    input.Key = input._key;
+                }
+                return;
+            }
+
+            param.Use();
+
+            if (param.buttons == UIMouseButton.Right) {
+                input.Key = UnityEngine.KeyCode.None;
+                if (input._action is object) input._action(input.Key);
+            }
+            else {
+                input._button.text = Ctransl.Translate("PRESS_ANY_KEY");
+                input._button.Focus();
+                UIView.PushModal(input._button);
+                input._waitingInput = true;
+            }
+        }
+
+    }
+    public class KeyInput : Element
+    {
+        public KeyCodeWithModifiers Keys {
+            get => _keys;
+            set { _keys = value; _button.text = _keys.ToString(); }
+        }
+        public void SetTriggerAction(System.Func<KeyCodeWithModifiers, KeyCodeWithModifiers?> action)
+    => _action = action;
         public KeyInput() { }
 
         protected override Element _Create(Element parent, Properties props)
@@ -582,58 +671,150 @@
         }
 
         internal protected override UIComponent _UIComp => _panel;
-        protected KeyInput(KeyInput keyIput) : this(keyIput._panel, keyIput._button) { }
+        protected KeyInput(KeyInput keyInput) : this(keyInput._panel, keyInput._button) { }
         private KeyInput(UIPanel panel, UIButton button) { _panel = panel; _button = button; }
 
         [Game.RequireDestruction] public readonly UIPanel _panel;
         public readonly UIButton _button;
-        private UnityEngine.KeyCode _key = UnityEngine.KeyCode.None;
-
+        private KeyCodeWithModifiers _keys = new KeyCodeWithModifiers(UnityEngine.KeyCode.None, UnityEngine.EventModifiers.None);
         private bool _waitingInput = false;
-        private System.Func<UnityEngine.KeyCode, UnityEngine.KeyCode?> _action = null;
+        private System.Func<KeyCodeWithModifiers, KeyCodeWithModifiers?> _action = null;
 
-
-        private static void _KeyPressAction(KeyInput input, UIComponent _,
-                                                            UIKeyEventParameter param)
+        private static void _KeyPressAction(KeyInput input, UIComponent _, UIKeyEventParameter param)
         {
+            // If input is not waiting for input, return immediately
             if (!input._waitingInput) return;
 
+            // Get the input modifiers from the key event parameters
+            var inputModfifiers = KeyCodeWithModifiers.GetModifiers(param);
             var inputKey = param.keycode;
+
+            // If the input key is Escape, cancel the input action
+            if (inputKey == UnityEngine.KeyCode.Escape) {
+                param.Use();
+                UIView.PopModal();
+                input._waitingInput = false;
+                input.Keys = input._keys;
+                return;
+            }
+
+            // If the input key is a modifier key, ignore it
+            //To prevent individual modifier key binding and make it easier for players to bind combination keys
+            if (KeyCodeWithModifiers.IsModifierKey(inputKey)) return;
+
+            // If there is an action assigned, execute it with the new key and modifiers
             if (input._action is object) {
-                if (input._action(inputKey) is UnityEngine.KeyCode key) inputKey = key;
+                if (input._action(new KeyCodeWithModifiers(inputKey, inputModfifiers)) is KeyCodeWithModifiers keys)
+                    input.Keys = keys;
                 else return;
             }
+
+            // Mark the event as used, close the modal view, and update the input keys
             param.Use();
             UIView.PopModal();
             input._waitingInput = false;
-
-            input.Key = inputKey;
+            input.Keys = new KeyCodeWithModifiers(inputKey, inputModfifiers);
         }
 
-        private static void _MouseEventAction(KeyInput input, UIComponent _,
-                                                              UIMouseEventParameter param)
+        private static void _MouseEventAction(KeyInput input, UIComponent _, UIMouseEventParameter param)
         {
+            // If input is waiting for input and the left mouse button is clicked, cancel the input action
             if (input._waitingInput) {
                 if (param.buttons == UIMouseButton.Left) {
                     param.Use();
                     UIView.PopModal();
                     input._waitingInput = false;
-                    input.Key = input._key;
+                    input.Keys = input._keys;
                 }
                 return;
             }
 
+            // Mark the event as used
             param.Use();
 
+            // If the right mouse button is clicked, reset the input keys
             if (param.buttons == UIMouseButton.Right) {
-                input.Key = UnityEngine.KeyCode.None;
-                if (input._action is object) input._action(input.Key);
+                input.Keys = new KeyCodeWithModifiers(UnityEngine.KeyCode.None, UnityEngine.EventModifiers.None);
+                if (input._action is object) input._action(input.Keys);
             }
             else {
+                // Display prompt to press any key and set waiting input to true
                 input._button.text = Ctransl.Translate("PRESS_ANY_KEY");
                 input._button.Focus();
                 UIView.PushModal(input._button);
                 input._waitingInput = true;
+            }
+        }
+
+        public struct KeyCodeWithModifiers
+        {
+            public UnityEngine.KeyCode Key;
+            public UnityEngine.EventModifiers Modifiers;
+
+            public KeyCodeWithModifiers(UnityEngine.KeyCode key, UnityEngine.EventModifiers modifiers)
+            {
+                Key = key;
+                Modifiers = modifiers;
+            }
+
+            public override string ToString()
+            {
+                if (Modifiers == UnityEngine.EventModifiers.None && Key == UnityEngine.KeyCode.None) return "None";
+                else if (Modifiers == UnityEngine.EventModifiers.None) return Key.ToString();
+                else return $"{Modifiers} + {Key}";
+            }
+            /// <summary>
+            /// Check for each modifier key and return as soon as one is detected
+            /// </summary>
+            /// <param name="param"></param>
+            /// <returns></returns>
+            public static UnityEngine.EventModifiers GetModifiers(UIKeyEventParameter param)
+            {
+                UnityEngine.EventModifiers modifiers = UnityEngine.EventModifiers.None;
+
+                if (param.control)
+                    modifiers = UnityEngine.EventModifiers.Control;
+                else if (param.alt)
+                    modifiers = UnityEngine.EventModifiers.Alt;
+                else if (param.shift)
+                    modifiers = UnityEngine.EventModifiers.Shift;
+
+                return modifiers;
+            }
+            /// <summary>
+            /// Check if the key is a modifier key
+            /// </summary>
+            /// <param name="key"></param>
+            /// <returns></returns>
+            internal static bool IsModifierKey(UnityEngine.KeyCode key)
+            {
+                
+                switch (key) {
+                case UnityEngine.KeyCode.LeftControl:
+                case UnityEngine.KeyCode.RightControl:
+                case UnityEngine.KeyCode.LeftShift:
+                case UnityEngine.KeyCode.RightShift:
+                case UnityEngine.KeyCode.LeftAlt:
+                case UnityEngine.KeyCode.RightAlt:
+                    return true;
+                default:
+                    return false;
+                }
+            }
+
+            public override bool Equals(object obj)
+            {
+                return obj is KeyCodeWithModifiers modifiers &&
+                       Key == modifiers.Key &&
+                       Modifiers == modifiers.Modifiers;
+            }
+
+            public override int GetHashCode()
+            {
+                int hashCode = 34518437;
+                hashCode = hashCode * -1521134295 + Key.GetHashCode();
+                hashCode = hashCode * -1521134295 + Modifiers.GetHashCode();
+                return hashCode;
             }
         }
     }

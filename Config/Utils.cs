@@ -156,4 +156,38 @@
             return true;
         }
     }
+    public class CfKeyWithWithModifiers : ConfigData<UI.KeyInput.KeyCodeWithModifiers>
+    {
+        public CfKeyWithWithModifiers(UI.KeyInput.KeyCodeWithModifiers v) : base(v) { }
+
+        public UnityEngine.KeyCode Key => _data.Key;
+        public UnityEngine.EventModifiers Modifiers => _data.Modifiers;
+
+        public override bool AssignByParsing(string str)
+        {
+            if (str.Contains(" + ")) {
+                var strs = str.Split(new[] { " + " }, StringSplitOptions.None);
+                if (strs.Length != 2) return false;
+                try {
+                    _data.Key = (UnityEngine.KeyCode) Enum.Parse(typeof(UnityEngine.KeyCode), strs[1]);
+                    _data.Modifiers = (UnityEngine.EventModifiers) Enum.Parse(typeof(UnityEngine.EventModifiers), strs[0]);
+                }
+                catch {
+                    return false;
+                }
+            }
+            else {
+                try {
+                    _data.Key = (UnityEngine.KeyCode) Enum.Parse(typeof(UnityEngine.KeyCode), str);
+                    _data.Modifiers = UnityEngine.EventModifiers.None;
+                }
+                catch {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        public UI.KeyInput.KeyCodeWithModifiers ToKeyCodeWithModifiers() => new UI.KeyInput.KeyCodeWithModifiers(Key, Modifiers);
+    }
 }
