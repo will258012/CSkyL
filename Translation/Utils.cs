@@ -7,9 +7,9 @@ using static ColossalFramework.Plugins.PluginManager;
 
 namespace CSkyL.Translation
 {
-    internal class Utils
+    public class Utils
     {
-        internal static string AssemblyPath {
+        public static string AssemblyPath {
             get {
 
                 // No path cached - get list of currently active plugins.

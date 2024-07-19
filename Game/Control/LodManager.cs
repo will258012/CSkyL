@@ -75,10 +75,8 @@ namespace CSkyL.Game.Control
             case BuildingManager buildingManager:
                 return PrefabCollection<BuildingInfo>.GetPrefab((uint) buildingManager.m_infoCount - 1).m_minLodDistance;
             case PropManager propManager when !IsPropManager_MaxRenderDistance:
-                //return PrefabCollection<PropInfo>.GetPrefab((uint) propManager.m_infoCount - 1).m_lodRenderDistance;
                 return propManager.m_props.m_buffer[propManager.m_infoCount].Info.m_lodRenderDistance;
             case PropManager propManager when IsPropManager_MaxRenderDistance:
-                //return PrefabCollection<PropInfo>.GetPrefab((uint) propManager.m_infoCount - 1).m_maxRenderDistance;
                 return propManager.m_props.m_buffer[propManager.m_infoCount].Info.m_maxRenderDistance;
             case NetManager netManager:
                 var count = PrefabCollection<NetInfo>.GetPrefab((uint) netManager.m_infoCount - 1);

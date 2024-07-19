@@ -23,7 +23,7 @@ namespace CSkyL
                         IsTrainDisplayFoundandEnabled = true;
                         continue;
                     }
-                    if((info.publishedFileID.AsUInt64 == 2966990700 || info.publishedFileID.AsUInt64 == 2255219025) && info.isEnabled) {
+                    if ((info.publishedFileID.AsUInt64 == 2966990700 || info.publishedFileID.AsUInt64 == 2255219025) && info.isEnabled) {
                         Log.Msg("ModSupport: \"UnifiedUI \" was found!");
                         IsUUIFoundandEnabled = true;
                         continue;

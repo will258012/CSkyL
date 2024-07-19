@@ -1,7 +1,7 @@
-﻿using HarmonyLib;
+﻿using CSkyL.Game.Control;
+using HarmonyLib;
 using System;
 using UnityEngine;
-using static CSkyL.Game.Control;
 
 namespace CSkyL.Patch
 {

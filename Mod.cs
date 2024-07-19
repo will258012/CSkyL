@@ -41,6 +41,7 @@ namespace CSkyL
             try {
                 Harmony.Patcher.TryUnpatch(CskyLHarmonyID);
                 Harmony.Patcher.TryUnpatch(FPSCamHarmonyID);
+
             }
             catch (System.IO.FileNotFoundException e) {
                 Log.Err("Assembly of Harmony is missing: " + e.Message);

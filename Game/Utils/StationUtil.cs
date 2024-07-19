@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace CSkyL.Game.Utils
 {
-    class StationUtil
+    public class StationUtil
     {
         public static readonly TransportInfo.TransportType[] stationTransportType =
 {
@@ -14,7 +14,8 @@ namespace CSkyL.Game.Utils
             TransportInfo.TransportType.Bus,
             TransportInfo.TransportType.TouristBus,
             TransportInfo.TransportType.Helicopter,
-            TransportInfo.TransportType.Ship
+            TransportInfo.TransportType.Ship,
+            TransportInfo.TransportType.Trolleybus,
         };
         private static string GetStopName(ushort stopId)
         {
