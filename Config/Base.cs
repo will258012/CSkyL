@@ -193,15 +193,22 @@
             string str = "";
             for (int i = 1; i < tag.Length; i++) {
                 if (tag[i] == '_') {
-                    if (i + 3 < tag.Length && byte.TryParse(tag.Substring(i + 1, 3), out var ch))
+                    if (i + 1 < tag.Length && tag[i + 1] == '_') {
+                        str += '_';
+                        i++; // Skip the next '_'
+                    }
+                    else if (i + 3 < tag.Length && byte.TryParse(tag.Substring(i + 1, 3), out var ch)) {
                         str += (char) ch;
+                        i += 3;
+                    }
                     else Log.Warn($"Dict Config: xml tag({tag}) is invalid");
-                    i += 3;
                 }
-                else if (char.IsLetterOrDigit(tag[i]))
+                else if (char.IsLetterOrDigit(tag[i])) {
                     str += tag[i];
-                else Log.Warn($"Dict Config: xml tag({tag}) contains " +
-                              $"invalid character '{tag[i]}'");
+                }
+                else {
+                    Log.Warn($"Dict Config: xml tag({tag}) contains invalid character '{tag[i]}'");
+                }
             }
             return str;
         }
