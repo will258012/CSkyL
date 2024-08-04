@@ -102,7 +102,7 @@
 "SETTINGS_LODOPT_DETAIL","当第一人称摄像机开启时，进行LOD调整。\n（提高FPS，但可能会导致显示异常）",""
 "SETTINGS_SHADOWSOPT","启用阴影距离优化",""
 "SETTINGS_SHADOWSOPT_DETAIL","当第一人称摄像机开启时，进行阴影距离的调整。",""
-"VEHICLE_AITYPE_BUS","巴士",""
+"VEHICLE_AITYPE_BUS","公交",""
 "VEHICLE_AITYPE_TRAM","电车",""
 "VEHICLE_AITYPE_METRO","地铁",""
 "VEHICLE_AITYPE_TRAIN","火车",""
