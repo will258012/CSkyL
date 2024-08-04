@@ -95,7 +95,7 @@
         public CfFloat yawDegree => _data.yawDegree;
         public CfFloat pitchDegree => _data.pitchDegree;
 
-        public Transform.Offset AsOffSet => new Transform.Offset(
+        public Transform.Offset ToOffset() => new Transform.Offset(
             new Transform.LocalMovement { forward = forward, up = up, right = right },
             new Transform.DeltaAttitude(yawDegree, pitchDegree)
         );
